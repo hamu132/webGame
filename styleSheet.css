@@ -2,41 +2,56 @@
     color: white;
     font-size: larger;
     font-family: 'PixelMplus10', Arial;
-    word-spacing: 16px;
+    
 }
 body {
+    border: 2px solid #ffffff;
     background-color: #222966;
     padding: 0;
     margin: 0;
 }
-.black{
-    background-color: black;
+
+
+.title {
+    height: 10vh;
+    font-size: 50px;
+    font-weight:bold;
+    text-align: center;
+    background-color: #4CAF50;
+    
+    display:flex;
+    justify-content: center;  /* 横方向の中央 */
+    align-items: center;      /* 縦方向の中央 */
 }
 
-.topmenu {
-    position: fixed;
-    width: 100%;
-    background-color: #333333;
-    padding: 10px;
-    height: 9%;
-    border: 1px solid cyan;
-    border-top: 0;
-    border-left: 0;
-    border-right: 0;
-    top: 0;
+.game{
+    display: flex;
+    justify-content: center;  /* 横方向の中央 */
+    align-items: center;      /* 縦方向の中央 */
+    border: 1vh;
+    height: 89vh;
 }
-.linkmenu {
+
+canvas {
+    border: 1px solid #ccc;
+    background: white;
+}
+
+/* スタートボタンをcanvasに重ねる */
+#startBtn {
     position: absolute;
     top: 50%;
-    background-color: #444444;
-    border: 1px cyan solid;
-    width: 50%;
-    left: 25%;
-    height: 100px;
-    opacity: 0.3;
-    transition-duration: 0.3s;
-    transition-timing-function: cubic-bezier(1, 0, 0, 1);
-    transform: translateY(-70px);
-    grid: 2em / auto-flow calc(1 / 4 * 100%);
-    display: grid;
-}
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    font-size: 18px;
+    z-index: 10;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+
+  

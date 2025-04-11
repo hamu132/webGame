@@ -6,31 +6,21 @@
         <title>block game</title>
     </head>
     <body>
-        <div class="topmenu">
-            <div class="linkmenu">
-                <a href="index.html" style="grid-column: 1 / 2;" class="current">
-                    Overview
-                </a>
-                <a href="gameplay.html" style="grid-column: 2 / 3;">
-                    Gameplay
-                </a>
-                <a href="discord.html" style="grid-column: 3 / 4;">
-                    Discord
-                </a>
-                <a href="story.html" style="grid-column: 4 / 5;">
-                    StoryMode
-                </a>
+        <div class="container">
+            <div class="title">ブロック崩しゲーム</div>
+        
+            <div class="game">
+              <canvas id="canvas"></canvas>
+              
+              
+              <button id="startBtn">スタート</button>
             </div>
         </div>
-        <div class = "black">
-            <h1>こんにちは</h1>
-            <h1>こんにちは</h1>
-            <h1>こんにちは</h1>
-            <h1>こんにちは</h1>
-            <h1>こんにちは</h1>
-            <script src = "main.js"></script>
-        </div>
-        
-    </body>
 
+
+
+    </body>
+    <script src="main.js"></script>
+    <script src="Game.js"></script>
+    <script src="Player.js"></script>
 </html>
