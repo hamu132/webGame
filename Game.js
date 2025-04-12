@@ -1,7 +1,7 @@
 class Ball{
     constructor(height){
         this.x = height/4;
-        this.y = height/4;
+        this.y = height/10;
         this.xspeed = 4;
         this.yspeed = 4;
         this.radius = 10;
@@ -74,9 +74,11 @@ class Block{
     //ブロックとボールの接触を検知
     chackCollosion(ballX,ballY,radius){
         if(ballX+radius>=this.x && ballX-radius<=this.x+this.width && ballY+radius>=this.y && ballY-radius<=this.y+this.height){
+            //ブロックの上下に衝突
             if(ballX>=this.x && ballX<=this.x+this.width){
                 return 1;
             }
+            //ブロックの左右に衝突
             else{
                 return 2;
             }
@@ -120,7 +122,28 @@ class Game{
         this.ctx.closePath();
     }
     block(){
-        var blockObj=this.blockObj
+        const widthCount = 10;
+        const heightCount = 5;
+        var x = 0;
+        var y = 0;
+        // for(var i = 0;i<heightCount;i++){
+        //     for(var j = 0;j<widthCount;j++){
+        //         x = this.canvas.width*0.1 + j * this.canvas.width*0.8/widthCount;
+        //         y = this.canvas.height*0.1 + i * this.canvas.width*0.4/widthCount;
+        //         var blockObj=new Block(x,y,10,10,1,"blue",1);
+
+        //         this.ctx.beginPath();
+        //         if(!blockObj.broken){
+        //             this.ctx.rect(blockObj.x, blockObj.y, blockObj.width, blockObj.height);
+        //         }
+        
+        //         this.ctx.fillStyle = "black";
+        //         this.ctx.fill();
+        //         this.ctx.closePath();
+        //     }
+        // }
+
+        var blockObj = this.blockObj; 
         this.ctx.beginPath();
         console.log(blockObj.broken);
         if(!blockObj.broken){
@@ -141,19 +164,22 @@ class Game{
     }
     //衝突判定
     checkPaddleCollision() {
+        //パドルとボール
         const rate = this.paddle.collision(this.ball.getBottom(),this.ball.x,this.ball.yspeed);
         if(rate!=100){
             this.ball.yspeed = -this.ball.yspeed;
             this.ball.xspeed += rate;
         }
 
+        //ブロックとボール
         if(!this.blockObj.broken){
             const blockRate = this.blockObj.chackCollosion(this.ball.x,this.ball.y,this.ball.radius);
-            //sconsole.log(blockRate);
+            //ブロックの上下に衝突
             if(blockRate==1){
                 this.ball.yspeed=-this.ball.yspeed;
                 this.blockObj.broken = true;
             }
+            //ブロックの左右に衝突
             if(blockRate==2){
                 this.ball.xspeed=-this.ball.xspeed;
                 this.blockObj.broken = true;
