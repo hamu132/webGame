@@ -68,9 +68,10 @@ class Block{
         this.point = point;
         this.color = color;
         this.item = item;
-        this.brokbren = false;
+        this.broken = false;
     }
 
+    //ブロックとボールの接触を検知
     chackCollosion(ballX,ballY,radius){
         if(ballX+radius>=this.x && ballX-radius<=this.x+this.width && ballY+radius>=this.y && ballY-radius<=this.y+this.height){
             if(ballX>=this.x && ballX<=this.x+this.width){
