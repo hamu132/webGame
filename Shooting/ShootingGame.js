@@ -9,19 +9,23 @@ class ShootingGame{
     constructor(height,canvas,ctx){
         this.mouseX = 0;
         this.mouseY = 0;
-        this.ball = new Ball(height);
+        
         this.paddle = new Paddle(canvas,ctx);
+        this.ball = new Ball(this.paddle);
         this.point = new Point();
+        this.life = 5;
         this.blocks = [];
         this.createBlocks();
         this.canvas = canvas;
         this.ctx = ctx;
+        this.canvas.addEventListener("click",()=>{
+            this.ball.isClicked=true;
+        })
     }
 
     // ボール
     circle(ball){
-        var x = ball.advanceX();
-        var y = ball.advanceY();
+        let { x, y } = ball.advance(this.mouseX, this.mouseY);
         var radius = ball.radius;
         this.ctx.beginPath();
         this.ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -73,8 +77,11 @@ class ShootingGame{
     drawPoint(){
         this.ctx.font = '100px Roboto medium';
         this.ctx.textAlign = "center";
-        this.ctx.fillText('Point', this.canvas.height/2, 400);
-        this.ctx.fillText(this.point.getPoint(), this.canvas.height/2, 500);
+        this.ctx.fillText('Point', this.canvas.width/2, 400);
+        this.ctx.fillText(this.point.getPoint(), this.canvas.width/2, 500);
+        this.ctx.font = '50px Roboto medium';
+        this.ctx.fillText('Life:'+this.life, this.canvas.width/6, 400);
+        
     }
 
 
@@ -109,14 +116,20 @@ class ShootingGame{
         if(this.canvas.width<this.ball.x+this.ball.radius || this.ball.x-this.ball.radius<0){
             this.ball.xspeed = -this.ball.xspeed;
         }
-        if(this.canvas.height<this.ball.y+this.ball.radius || this.ball.y-this.ball.radius<0){
+        if(this.ball.y-this.ball.radius<0){
             this.ball.yspeed = -this.ball.yspeed;
+        }
+        //地面との衝突
+        if(this.canvas.height<this.ball.y+this.ball.radius){
+            this.life-=1;
+            this.ball.isClicked = false;
         }
 
     }
 
     gamePlay(mouseX,mouseY){
         this.mouseMove(mouseX,mouseY);//マウス座標を記録
+
         this.circle(this.ball);//ボール
         this.paddleDraw(this.mouseX);//打ち返し用の板
         this.drawBlocks();//ブロック
