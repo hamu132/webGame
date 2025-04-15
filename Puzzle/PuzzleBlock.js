@@ -1,8 +1,8 @@
 class PuzzleBlock{
-    constructor(x,y,proparty,canvas){
+    constructor(x,y,type,canvas){
         this.x = x;
         this.y = y;
-        this.proparty = proparty;
+        this.type = type;
         this.width = 30;
         this.height = 30;
         this.isClicked = false;
@@ -16,6 +16,20 @@ class PuzzleBlock{
         else{
             this.width = 30;
             this.height = 30;
+        }
+    }
+    choiseColor(){
+        switch(this.type){
+            case "A":
+                return "red";
+            case "B":
+                return "green";
+            case "C":
+                return "blue";
+            case "P":
+                return "yellow";
+            case "F":
+                return "black";
         }
     }
 

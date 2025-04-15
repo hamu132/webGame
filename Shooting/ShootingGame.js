@@ -2,7 +2,7 @@ import Ball from './Ball.js';
 import Paddle from './Paddle.js';
 import Block from './Block.js';
 import Point from './Point.js';
-
+import Item from './Item.js';
 
 
 class ShootingGame{
@@ -56,7 +56,8 @@ class ShootingGame{
             for(let col = 0; col < cols; col++){
                 const x = offsetX + col * (blockWidth + padding);
                 const y = offsetY + row * (blockHeight + padding);
-                const block = new Block(x, y, blockWidth, blockHeight, 1, "red", 0);
+                const item = new Item(x,y);
+                const block = new Block(x, y, blockWidth, blockHeight, 1, "red", item);
                 this.blocks.push(block);
             }
         }
@@ -67,6 +68,14 @@ class ShootingGame{
             if(!block.broken){
                 this.ctx.beginPath();
                 this.ctx.rect(block.x, block.y, block.width, block.height);
+                this.ctx.fillStyle = block.color;
+                this.ctx.fill();
+                this.ctx.closePath();
+            }
+            else{
+                block.item.advance();
+                this.ctx.beginPath();
+                this.ctx.rect(block.item.x, block.item.y, block.item.width, block.item.height);
                 this.ctx.fillStyle = block.color;
                 this.ctx.fill();
                 this.ctx.closePath();
@@ -124,6 +133,7 @@ class ShootingGame{
             this.life-=1;
             this.ball.isClicked = false;
         }
+        //アイテムとの衝突
 
     }
 

@@ -20,8 +20,20 @@ class Game{
         this.mouseY = event.clientY - rect.top;  // canvas内のy座標
         //console.log(`マウス座標: x=${this.mouseX}, y=${this.mouseY}`);
     }
+
+    //ここでリトライ機能をつける
+    reset(){
+        this.frame = 0;
+        this.shootingGame = new ShootingGame(this.height, this.canvas, this.ctx);
+        this.puzzleGame = new PuzzleGame(this.canvas, this.ctx);
+    }
     startGame() {
         this.canvas.addEventListener("mousemove",this.mouseMove.bind(this))
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "r" || e.key === "R") {
+                this.reset();
+            }
+        });
 
         
         this.update();

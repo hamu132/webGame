@@ -52,6 +52,19 @@ canvas {
     border-radius: 5px;
     cursor: pointer;
   }
-
+  #retryBtn {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    font-size: 18px;
+    z-index: 10;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
 
   
