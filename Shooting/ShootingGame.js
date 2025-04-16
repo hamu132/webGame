@@ -37,42 +37,44 @@ class ShootingGame{
     paddleDraw(mouseX){
         this.paddle.setx(mouseX,this.canvas.height);
         this.ctx.beginPath();
-        this.ctx.rect(mouseX-this.paddle.width/2, this.paddle.y, this.paddle.width, this.paddle.height);
+        this.ctx.rect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
         this.ctx.fillStyle = "green";
         this.ctx.fill();
         this.ctx.closePath();
     }
     //ブロックを作成
     createBlocks(){
-        const rows = 3;
-        const cols = 5;
-        const blockWidth = 100;
-        const blockHeight = 30;
+        const rows = 6;
+        const cols = 12;
+        const blockWidth = 50;
+        const blockHeight = 15;
         const padding = 10;
         const offsetX = 50;
         const offsetY = 50;
+        const itemList = ["speedUp","speedDown","bigSize","smallSize","penetrate",null,null,null,null,null,null,null,null,null];
     
         for(let row = 0; row < rows; row++){
             for(let col = 0; col < cols; col++){
                 const x = offsetX + col * (blockWidth + padding);
                 const y = offsetY + row * (blockHeight + padding);
-                const item = new Item(x,y);
+                const itemName = itemList[Math.floor(Math.random()*itemList.length)];
+                const item = new Item(x,y,itemName);
                 const block = new Block(x, y, blockWidth, blockHeight, 1, "red", item);
                 this.blocks.push(block);
             }
         }
     }
-    //ブロックを描画
+    //ブロックもしくはアイテムを描画
     drawBlocks(){
         for(const block of this.blocks){
-            if(!block.broken){
+            if(!block.isBroken){
                 this.ctx.beginPath();
                 this.ctx.rect(block.x, block.y, block.width, block.height);
                 this.ctx.fillStyle = block.color;
                 this.ctx.fill();
                 this.ctx.closePath();
             }
-            else{
+            else if(!block.item.isBroken && block.item.item!=null){
                 block.item.advance();
                 this.ctx.beginPath();
                 this.ctx.rect(block.item.x, block.item.y, block.item.width, block.item.height);
@@ -103,22 +105,42 @@ class ShootingGame{
             this.ball.xspeed += rate;
         }
     
-        // ブロックとの衝突
+        // ブロックもしくはアイテムとの衝突
         for(const block of this.blocks){
-            if(!block.broken){
+            if(!block.isBroken){
                 const blockRate = block.checkCollision(this.ball.x, this.ball.y, this.ball.radius);
                 if(blockRate === 1){
                     this.ball.yspeed = -this.ball.yspeed;
-                    block.broken = true;
+                    block.isBroken = true;
                     this.point.pointUp(block);
                     break;
                 }
                 if(blockRate === 2){
                     this.ball.xspeed = -this.ball.xspeed;
-                    block.broken = true;
+                    block.isBroken = true;
                     this.point.pointUp(block);
                     break;
                 }
+            }
+            else if(!block.item.isBroken){
+                const itemName = block.item.checkCollision(this.paddle.x,this.paddle.y,this.paddle.width);
+                switch (itemName){
+                    case "speedUp":
+                        this.ball.yspeed*=1.5;
+                        break;
+                    case "speedDown":
+                        this.ball.yspeed*=0.67;
+                        break;
+                    case "bigSize":
+                        this.paddle.width =200;
+                        break;
+                    case "smallSize":
+                        this.paddle.width =50;
+                        break;
+                    case "penetrate":
+                        break;
+                }
+
             }
         }
         //壁との衝突
@@ -133,7 +155,7 @@ class ShootingGame{
             this.life-=1;
             this.ball.isClicked = false;
         }
-        //アイテムとの衝突
+
 
     }
 

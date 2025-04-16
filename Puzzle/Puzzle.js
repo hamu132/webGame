@@ -1,4 +1,5 @@
 import PuzzleBlock from "./PuzzleBlock.js";
+import GroupBlock from "./GropuBlock.js";
 class PuzzleGame{
     constructor(canvas,ctx){
         this.canvas = canvas;
@@ -10,70 +11,81 @@ class PuzzleGame{
         this.canvas.addEventListener("click", () => {
             this.handleClick(this.mouseX, this.mouseY);
         });
+
+        this.GroupBlock = new GroupBlock();
     }
     gamePlay(mouseX,mouseY){
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.drawBlocks(mouseX,mouseY);
     }
+    //クリック
     handleClick(mouseX, mouseY) {
         for (const block of this.blocks) {
-            if (
-                mouseX >= block.x &&
-                mouseX <= block.x + block.width &&
-                mouseY >= block.y &&
-                mouseY <= block.y + block.height
-            ) {
+            if (mouseX<=block.x+block.width/2 && block.x-block.width/2<=mouseX && mouseY<=block.y+block.height/2 && block.y-block.height/2<=mouseY) {
                 block.isClicked = !block.isClicked;
             }
         }
     }
+    //ブロックを作成
     createBlocks(){
-        const rows = 3;
+        const rows = 5;
         const cols = 5;
-        const padding = 50;
+        const padding = 40;
         const offsetX = 50;
         const offsetY = 250;
-        const blockType = ["A","B","C","P","F"]
+        const blockType = ["A","P","F"]
     
         for(let row = 0; row < rows; row++){
             for(let col = 0; col < cols; col++){
                 const x = offsetX + col * (padding);
                 const y = offsetY + row * (padding);
-                const type = blockType[Math.floor(Math.random()*5)];
+                const type = blockType[Math.floor(Math.random()*blockType.length)];
                 const block = new PuzzleBlock(x, y,type,this.canvas);
                 this.blocks.push(block);
             }
         }
     }
-    keisan(a,b){
-
-    }
+    //ブロックを描画
     drawBlocks(mouseX,mouseY){
+        //2回クリックされれば
         var clicked = []
         for(const block of this.blocks){
             if(block.isClicked){
-                clicked.push({x:block.x,y:block.y});
+                clicked.push(block);
             }
         }
-        var minX,maxX,minY,maxY;
         if(clicked.length>=2){
-            minX = Math.min(clicked[0].x,clicked[1].x);
-            maxX = Math.max(clicked[0].x,clicked[1].x);
-            minY = Math.min(clicked[0].y,clicked[1].y);
-            maxY = Math.max(clicked[0].y,clicked[1].y);
+            this.GroupBlock.setValue(clicked[0],clicked[1]);
+            this.GroupBlock.change();
         }
+
+        var point = 0;
+        var tempPoint;
+        
         for(const block of this.blocks){
-            if(minX<=block.x && block.x<=maxX && minY<=block.y && block.y<=maxY){
-                block.isClicked = true;
-            }
-            block.mouseHover(mouseX,mouseY);
+            this.ctx.save();
             this.ctx.beginPath();
-            this.ctx.rect(block.x, block.y, block.width, block.height);
+            //四角形内部にあるもので、点数を計算
+            tempPoint = this.GroupBlock.reckonPoint(block);
+            point+=tempPoint;
+            if(tempPoint != 0){
+                this.ctx.translate(this.GroupBlock.axisX,this.GroupBlock.axisY);
+                this.ctx.rotate(this.GroupBlock.angle);
+                this.ctx.scale(this.GroupBlock.scale,this.GroupBlock.scale);
+                this.ctx.translate(-this.GroupBlock.axisX,-this.GroupBlock.axisY);
+            }
+            else{
+                block.mouseHover(mouseX,mouseY);
+            }
+            
+            this.ctx.rect(block.x-block.width/2, block.y-block.height/2, block.width, block.height);
             this.ctx.fillStyle = block.choiseColor();
             this.ctx.fill();
             this.ctx.closePath();
+            this.ctx.restore();
         }
+        
     }
 
 }

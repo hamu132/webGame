@@ -8,7 +8,7 @@ class Block{
         this.point = point;
         this.color = color;
         this.item = item;
-        this.broken = false;
+        this.isBroken = false;
     }
 
     //ブロックとボールの接触を検知

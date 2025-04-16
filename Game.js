@@ -12,6 +12,7 @@ class Game{
         this.mouseY = 0;
         this.shootingGame = new ShootingGame(this.height,this.canvas,this.ctx);
         this.puzzleGame = new PuzzleGame(this.canvas,this.ctx);
+        this.test = new Test(this.ctx);
     }
     //マウス位置を取得
     mouseMove(){
@@ -42,14 +43,34 @@ class Game{
         this.frame++;
         this.height = this.canvas.height;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);//前のフレームを消す
-        this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
+        //this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
         this.puzzleGame.gamePlay(this.mouseX,this.mouseY);
-
+        //this.test.draw();
         //this.debug();
         requestAnimationFrame(this.update.bind(this));
     }
 }
 
+class Test{
+    constructor(ctx){
+        this.ctx = ctx;
+        this.x = 0;
+        this.y = 0;
+        this.width = 100;
+        this.height = 100;
+    }
+    draw(){
+        this.ctx.save();
+        this.ctx.rotate(-Math.PI/3);
+        this.ctx.translate(0, 800);
+        
+        this.ctx.beginPath();
+        this.ctx.rect(this.x,this.y,this.width,this.height);
+        this.ctx.fill();
+        this.ctx.closePath();
+        this.ctx.restore();
+    }
+}
 
 
 const startBtn = document.getElementById("startBtn");
