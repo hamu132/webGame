@@ -1,13 +1,17 @@
 class GroupBlock{
     constructor(){
-        this.axisX;
-        this.axisY;
+        this.reset();
+    }
+    reset(){
+        this.clickedCount = 0;
+        this.axisX = 0;
+        this.axisY = 0;
         this.angle=0;
         this.scale=1;
-        this.minX;
-        this.maxX;
-        this.minY;
-        this.maxY;
+        this.minX = 0;
+        this.maxX = 0;
+        this.minY = 0;
+        this.maxY = 0;
     }
     setValue(a,b){
         this.minX = Math.min(a.x,b.x);
@@ -23,11 +27,13 @@ class GroupBlock{
         if(this.scale<0){
             this.scale = 0;
         }
-        
     }
+
     reckonPoint(block){
         var plus,minus,rect = 0;
+        //点数あり（内部）：0以上の数値
         if(this.minX<=block.x && block.x<=this.maxX && this.minY<=block.y && block.y<=this.maxY){
+            console.log(this.minX);
             switch(block.type){
                 case "A":
                     rect++;
@@ -41,7 +47,8 @@ class GroupBlock{
             }
             return plus-minus;
         }
-        return 0;
+        //点数無し（外部）：-1
+        return -1;
     }
 }
 
