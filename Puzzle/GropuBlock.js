@@ -29,26 +29,20 @@ class GroupBlock{
         }
     }
 
-    reckonPoint(block){
-        var plus,minus,rect = 0;
+    reckonPoint(block,plusItem,minusItem,rectItem){
         //点数あり（内部）：0以上の数値
         if(this.minX<=block.x && block.x<=this.maxX && this.minY<=block.y && block.y<=this.maxY){
-            console.log(this.minX);
-            switch(block.type){
-                case "A":
-                    rect++;
-                    break;
-                case "P":
-                    plus++;
-                    break;
-                case "F":
-                    minus++;
-                    break;
+            switch(block.color){
+                case plusItem:
+                    return 1;
+                case minusItem:
+                    return -1;
+                case rectItem:
+                    return 0;
             }
-            return plus-minus;
         }
         //点数無し（外部）：-1
-        return -1;
+        return -2;
     }
 }
 

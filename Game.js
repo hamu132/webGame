@@ -43,7 +43,7 @@ class Game{
         this.frame++;
         this.height = this.canvas.height;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);//前のフレームを消す
-        //this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
+        this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
         this.puzzleGame.gamePlay(this.mouseX,this.mouseY);
         //this.test.draw();
         //this.debug();

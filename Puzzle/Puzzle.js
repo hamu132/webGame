@@ -13,19 +13,21 @@ class PuzzleGame{
         });
 
         this.GroupBlock = new GroupBlock();
-        this.plusItem = "P";
-        this.minusItem = "F";
-        this.rectItem = "A";
+        this.plusItem = "R";
+        this.minusItem = "G";
+        this.rectItem = "B";
+        this.score = 0;
     }
     gamePlay(mouseX,mouseY){
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.drawBlocks(mouseX,mouseY);
+        this.drawPoint();
     }
     //クリック
     handleClick(mouseX, mouseY) {
         for (const block of this.blocks) {
-            if (mouseX<=block.x+block.width/2 && block.x-block.width/2<=mouseX && mouseY<=block.y+block.height/2 && block.y-block.height/2<=mouseY) {
+            if (block.color == this.rectItem && mouseX<=block.x+block.width/2 && block.x-block.width/2<=mouseX && mouseY<=block.y+block.height/2 && block.y-block.height/2<=mouseY) {
                 block.isClicked = !block.isClicked;
                 //クリックされたら+1、解除されたら-1
                 this.GroupBlock.clickedCount += Math.floor((block.isClicked-0.5)*2);
@@ -39,14 +41,14 @@ class PuzzleGame{
         const padding = 40;
         const offsetX = 50;
         const offsetY = 250;
-        const blockType = ["A","P","F"]
+        const blockColor = ["R","G","B"]
     
         for(let row = 0; row < rows; row++){
             for(let col = 0; col < cols; col++){
                 const x = offsetX + col * (padding);
                 const y = offsetY + row * (padding);
-                const type = blockType[Math.floor(Math.random()*blockType.length)];
-                const block = new PuzzleBlock(x, y,type,this.canvas);
+                const color = blockColor[Math.floor(Math.random()*blockColor.length)];
+                const block = new PuzzleBlock(x, y,color,this.canvas);
                 this.blocks.push(block);
             }
         }
@@ -64,9 +66,8 @@ class PuzzleGame{
             this.GroupBlock.setValue(clicked[0],clicked[1]);
             this.GroupBlock.change();
         }
-
-        var point = 0;
-        var tempPoint;
+        var tempScore;
+        var oneBlockScore = 0;
 
         var num = 0;
         
@@ -74,10 +75,11 @@ class PuzzleGame{
             this.ctx.save();
             this.ctx.beginPath();
             //四角形内部にあるもので、点数を計算
-            tempPoint = this.GroupBlock.reckonPoint(block);
-            point+=tempPoint;
+            tempScore = this.GroupBlock.reckonPoint(block,this.plusItem,this.minusItem,this.rectItem);
+            
             //消えてく
-            if(tempPoint != -1){
+            if(tempScore != -2){
+                oneBlockScore += tempScore;
                 //消えてる最中
                 if(this.GroupBlock.scale>0){
                     this.ctx.translate(this.GroupBlock.axisX,this.GroupBlock.axisY);
@@ -89,12 +91,10 @@ class PuzzleGame{
                 else{
                     //ブロックの値をリセット
                     num=1;
-                    const blockType = ["A","P","F"];
-                    const type = blockType[Math.floor(Math.random()*blockType.length)];
-                    block.reset(type);
-                    
+                    const blockColor = ["R","G","B"];
+                    const color = blockColor[Math.floor(Math.random()*blockColor.length)];
+                    block.reset(color);
                 }
-
             }
 
             //四角形外部のものはホバー
@@ -108,11 +108,24 @@ class PuzzleGame{
             this.ctx.closePath();
             this.ctx.restore();
         }
+        //リセット
         if(num==1){
             this.GroupBlock.reset();
-        }
 
-        
+            var temp = this.plusItem;
+            this.plusItem = this.minusItem;
+            this.minusItem = this.rectItem;
+            this.rectItem = temp;
+            this.score+=oneBlockScore;
+        }
+    }
+    //ブロックのポイントを表示
+    drawPoint(){
+        this.ctx.font = '50px Roboto medium';
+        this.ctx.fillText('SELECT:'+this.rectItem, this.canvas.width/6, 500);
+        this.ctx.fillText('PLUS:'+this.plusItem, this.canvas.width/6, 550);
+        this.ctx.fillText('MINUS:'+this.minusItem, this.canvas.width/6, 600);
+        this.ctx.fillText('SCORE:'+this.score, this.canvas.width/6, 700);
     }
 
 }
