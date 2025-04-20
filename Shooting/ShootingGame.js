@@ -1,7 +1,7 @@
 import Ball from './Ball.js';
 import Paddle from './Paddle.js';
 import Block from './Block.js';
-import Point from './Point.js';
+import Score from './Score.js';
 import Item from './Item.js';
 
 
@@ -12,7 +12,7 @@ class ShootingGame{
         
         this.paddle = new Paddle(canvas,ctx);
         this.ball = new Ball(this.paddle);
-        this.point = new Point();
+        this.score = new Score();
         this.life = 5;
         this.blocks = [];
         this.createBlocks();
@@ -52,14 +52,19 @@ class ShootingGame{
         const offsetX = 50;
         const offsetY = 50;
         const itemList = ["speedUp","speedDown","bigSize","smallSize","penetrate",null,null,null,null,null,null,null,null,null];
+        const pointList = [1,0,0];
+        const colorList = ["red","green","green"]
     
         for(let row = 0; row < rows; row++){
             for(let col = 0; col < cols; col++){
+                const index = Math.floor(Math.random()*3);
+                const point = pointList[index];
+                const color = colorList[index];
                 const x = offsetX + col * (blockWidth + padding);
                 const y = offsetY + row * (blockHeight + padding);
                 const itemName = itemList[Math.floor(Math.random()*itemList.length)];
                 const item = new Item(x,y,itemName);
-                const block = new Block(x, y, blockWidth, blockHeight, 1, "red", item);
+                const block = new Block(x, y, blockWidth, blockHeight, point, color, item);
                 this.blocks.push(block);
             }
         }
@@ -89,7 +94,7 @@ class ShootingGame{
         this.ctx.font = '100px Roboto medium';
         this.ctx.textAlign = "center";
         this.ctx.fillText('Point', this.canvas.width/2, 400);
-        this.ctx.fillText(this.point.getPoint(), this.canvas.width/2, 500);
+        this.ctx.fillText(this.score.getPoint(), this.canvas.width/2, 500);
         this.ctx.font = '50px Roboto medium';
         this.ctx.fillText('Life:'+this.life, this.canvas.width/6, 400);
         
@@ -112,13 +117,13 @@ class ShootingGame{
                 if(blockRate === 1){
                     this.ball.yspeed = -this.ball.yspeed;
                     block.isBroken = true;
-                    this.point.pointUp(block);
+                    this.score.pointUp(block);
                     break;
                 }
                 if(blockRate === 2){
                     this.ball.xspeed = -this.ball.xspeed;
                     block.isBroken = true;
-                    this.point.pointUp(block);
+                    this.score.pointUp(block);
                     break;
                 }
             }

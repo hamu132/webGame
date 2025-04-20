@@ -1,11 +1,11 @@
 
 class Block{
-    constructor(x,y,width,height,point,color,item){
+    constructor(x,y,width,height,score,color,item){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.point = point;
+        this.score = score;
         this.color = color;
         this.item = item;
         this.isBroken = false;
