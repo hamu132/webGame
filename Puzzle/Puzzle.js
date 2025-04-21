@@ -2,6 +2,9 @@ import PuzzleBlock from "./PuzzleBlock.js";
 import GroupBlock from "./GropuBlock.js";
 class PuzzleGame{
     constructor(canvas,ctx){
+        this.frame = 0;
+        this.limitTime = 20;
+        this.life = 5;
         this.canvas = canvas;
         this.ctx = ctx;
         this.blocks = [];
@@ -18,11 +21,22 @@ class PuzzleGame{
         this.rectItem = "B";
         this.score = 0;
     }
+    //毎フレーム
     gamePlay(mouseX,mouseY){
+        this.frame++;
+        if(this.frame%60==0){
+            this.limitTime-=1;
+        }
+        if(this.frame%1200==0){
+            this.frame = 0;
+            this.life-=1;
+        }
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.drawBlocks(mouseX,mouseY);
         this.drawPoint();
+        this.drawLimitTime();
+        this.drawLimitTime
     }
     //クリック
     handleClick(mouseX, mouseY) {
@@ -52,6 +66,37 @@ class PuzzleGame{
                 this.blocks.push(block);
             }
         }
+    }
+    liner(l,a,b,min){
+        const y = l * (this.frame-a) + b
+        //まだの時
+        if(this.frame<a){
+            return b;
+        }
+        //移動中
+        if(0<y){
+            return y;
+        }
+        //終わった後
+        else{
+            return 0;
+        }
+    }
+    //制限時間バー
+    drawLimitTime(){
+        this.ctx.save();
+        this.ctx.beginPath();
+        //長さを取得
+        const length = 215;
+        const l = length/300;
+
+        this.ctx.rect(25,220,                          this.liner(-l,0,length),5);
+        this.ctx.rect(20,this.liner(l,300,220),        5,this.liner(-l,300,length));
+        this.ctx.rect(this.liner(l,600,20),220+length, this.liner(-l,600,length),5);
+        this.ctx.rect(20+length,225,                   5,this.liner(-l,900,length));
+
+        this.ctx.closePath();
+        this.ctx.restore();
     }
     //ブロックを描画
     drawBlocks(mouseX,mouseY){
@@ -94,6 +139,7 @@ class PuzzleGame{
                     const blockColor = ["R","G","B"];
                     const color = blockColor[Math.floor(Math.random()*blockColor.length)];
                     block.reset(color);
+                    this.frame = 0;
                 }
             }
 
@@ -102,8 +148,9 @@ class PuzzleGame{
                 block.mouseHover(mouseX,mouseY,this.rectItem);
             }
             
-            this.ctx.rect(block.x-block.width/2, block.y-block.height/2, block.width, block.height);
+            
             this.ctx.fillStyle = block.choiseColor();
+            this.ctx.rect(block.x-block.width/2, block.y-block.height/2, block.width, block.height);
             this.ctx.fill();
             this.ctx.closePath();
             this.ctx.restore();
@@ -125,7 +172,7 @@ class PuzzleGame{
         this.ctx.fillText('SELECT:'+this.rectItem, this.canvas.width/6, 500);
         this.ctx.fillText('PLUS:'+this.plusItem, this.canvas.width/6, 550);
         this.ctx.fillText('MINUS:'+this.minusItem, this.canvas.width/6, 600);
-        this.ctx.fillText('SCORE:'+this.score, this.canvas.width/6, 700);
+        //this.ctx.fillText('SCORE:'+this.score, this.canvas.width/6, 700);
     }
 
 }

@@ -171,7 +171,7 @@ class ShootingGame{
         this.paddleDraw(this.mouseX);//打ち返し用の板
         this.drawBlocks();//ブロック
         this.checkPaddleCollision();//衝突判定
-        this.drawPoint();//得点
+        //this.drawPoint();//得点
     }
     mouseMove(mouseX,mouseY){
         this.mouseX = mouseX;

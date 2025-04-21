@@ -34,11 +34,11 @@ class Game{
     }
     drawScore(){
         let shootScore = this.shootingGame.score.score;
-        let shootLife = 0;
+        let shootLife = this.shootingGame.life;
         let puzzleScore = this.puzzleGame.score;
-        let puzzleLife = 0;
+        let puzzleLife = this.puzzleGame.life;
         let typingScore = this.typing.score;
-        let typingLife = 0;
+        let typingLife = this.typing.life;
         let allScore = shootScore + puzzleScore + typingScore;
         let x = this.canvas.width/2;
         let y = this.canvas.height/2;
@@ -55,34 +55,31 @@ class Game{
         this.ctx.rotate(this.angle);
         this.ctx.fillStyle = "red";
         this.ctx.fillText("【Shooting】",titleX,0);
-        this.ctx.translate(0,kannkaku);
-        this.ctx.fillText(shootScore,valueX,0);
+        this.ctx.fillText(shootScore,valueX,kannkaku);
+        this.ctx.fillText("♥".repeat(shootLife),valueX,kannkaku*2);
 
-        this.ctx.translate(0,-kannkaku);
         this.ctx.rotate(Math.PI/1.5);
         this.ctx.fillStyle = "blue";
         this.ctx.fillText("【Puzzle】",titleX,0);
-        this.ctx.translate(0,kannkaku);
-        this.ctx.fillText(puzzleScore,valueX,0);
-        this.ctx.translate(0,-kannkaku);
+        this.ctx.fillText(puzzleScore,valueX,kannkaku);
+        this.ctx.fillText("♥".repeat(puzzleLife),valueX,kannkaku*2);
 
         this.ctx.rotate(Math.PI/1.5);
         this.ctx.fillStyle = "green";
         this.ctx.fillText("【Typing】",titleX,0);
-        this.ctx.translate(0,kannkaku);
-        this.ctx.fillText(typingScore,valueX,0);
-        this.ctx.translate(0,-kannkaku);
+        this.ctx.fillText(typingScore,valueX,kannkaku);
+        this.ctx.fillText("♥".repeat(typingLife),valueX,kannkaku*2);
         this.ctx.fill();
         this.ctx.restore();
         this.angle+=0.003;
     }
     startGame() {
         this.canvas.addEventListener("mousemove",this.mouseMove.bind(this))
-        window.addEventListener("keydown", (e) => {
-            if (e.key === "r" || e.key === "R") {
-                this.reset();
-            }
-        });
+        // window.addEventListener("keydown", (e) => {
+        //     if (e.key === "r" || e.key === "R") {
+        //         this.reset();
+        //     }
+        // });
         this.update();
     }
     update(){

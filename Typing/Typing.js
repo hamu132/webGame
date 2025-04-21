@@ -1,11 +1,22 @@
 import Word from "./Word.js";
-import WordToRoma from "./wordToRoma.js";
 
 class Typing{
     constructor(canvas,ctx){
+        this.frame = 0;
         this.life = 5;
         this.score = 0;
-        this.hiraganas = ["こんにちは","ねむい","にほん","ごめんなさい","たいぴんぐ","たつのおとしご"];
+        this.hiraganas = [
+            "あめ", "いぬ", "さる", "かぜ", "うた", "そら", "やま", "かわ", "たに", "ほし",
+            "ひとみ", "はなび", "みずうみ", "こけし", "すなば", "ゆきだるま", "しんかんせん", "すもう", "ひこうき",
+            "うみねこ", "けんだま", "のこぎり", "てがみ", "りんご", "くるま", "じしん", "こおり",
+            "ぬいぐるみ", "こたつ", "はしご", "しんぶん", "たいよう", "おにぎり", "うどん", "おこのみやき", "たいやき",
+            "すいか", "まくら", "かさ", "せんぷうき", "けいたい", "ふとん", "ぼうし", "てぶくろ", "こども",
+            "おやつ", "うし", "さかな", "ねこ", "とり", "しか", "きつね", "たぬき", "らくだ", "ぺんぎん",
+            "あり", "くも", "とんぼ", "かぶとむし", "せみ", "はち", "てんとうむし", "いもむし",
+            "かみなり", "たいふう", "なだれ", "つなみ", "ゆき", "あらし", "かえで", "もみじ", "ひまわり", "たんぽぽ",
+            "でんち", "まど", "かべ", "いす", "つくえ", "ほんだな", "けしごむ", "えんぴつ",
+            "はし", "なべ", "やかん", "まないた", "れいぞうこ", "せんたくき", "そうじき","たつのおとしご"
+          ];
         this.canvas = canvas;
         this.ctx = ctx;
         this.createText();
@@ -18,6 +29,12 @@ class Typing{
     }
     //毎フレーム呼び出される
     gamePlay(){
+        this.frame ++;
+        if(this.word.timeProcess(this.frame) <= 0){
+            this.life -= 1;
+            this.createText();
+        }
+        //1~600
         this.drawText();
     }
     //問題のテキストを選ぶ+ローマ字を取得(最初＆問題クリア時)
@@ -27,6 +44,7 @@ class Typing{
         this.word = new Word(hiragana);
 
         this.currentNumRoma = 0;
+        this.frame = 0;
     }
 
     //キーを押し込んだとき
@@ -43,12 +61,12 @@ class Typing{
 
     //描画
     drawText(){
-        this.word.scale*=1.001;
+        this.word.scale*=1.002;
         this.ctx.save();
         //ちょっとずつ大きくなってくやつ
-        this.ctx.translate(this.canvas.width/2, this.canvas.height/2);
+        this.ctx.translate(this.canvas.width*0.7, this.canvas.height*0.75);
         this.ctx.scale(this.word.scale,this.word.scale);
-        //this.ctx.rotate(this.word.angle);
+        this.ctx.rotate(this.word.angle);
         this.ctx.translate(-this.canvas.width/2, -this.canvas.height/2);
 
         
@@ -63,6 +81,9 @@ class Typing{
         this.ctx.font = "48px sans-serif";
         this.ctx.fillStyle = notTypedColor;
         this.ctx.fillText(hiragana, x, this.canvas.height/2);
+        let w = this.ctx.measureText(hiragana).width;
+        //制限時間バー
+        this.ctx.rect(this.canvas.width/2 - w/2, this.canvas.height*0.53,w*(1-this.frame/(60*this.word.maxTime)),5);
 
         //ローマ字の描画
         this.ctx.font = "24px sans-serif";
@@ -83,10 +104,9 @@ class Typing{
             this.ctx.fillText(ch, x+charWidth/2-romaWidth/2, this.canvas.height/2.2);
             x += charWidth;
         }
-
+        
         this.ctx.restore();
-        this.ctx.font = "48px sans-serif";
-        this.ctx.fillText("Score:"+this.score, this.canvas.width*0.7, this.canvas.height*0.8);
+        //this.ctx.fillText(this.word.limitTime,700,700);
     }
 }
 

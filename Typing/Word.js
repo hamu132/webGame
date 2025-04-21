@@ -2,7 +2,8 @@ class Word{
     constructor(hiragana){
         this.scale = 1;
         this.angle = -Math.PI/6;
-        this.limitTime = 10;
+        this.maxTime = 10;
+        this.limitTime = this.maxTime;
         //ワード（ひらがな）
         this.hiragana = hiragana;
         this.roma = this.getRoma();
@@ -46,10 +47,12 @@ class Word{
             "ざじずぜぞ":"z",
             "だぢづでど":"d",
             "ばびぶべぼ":"b",
-            "ぱぴぷぺぽ":"p",
+            "ぱぴぷぺぽ":"p"
         }
         let small = {
-            "ゃゅょ":"y"
+            "ゃ":"ya",
+            "ゅ":"yu",
+            "ょ":"yo"
         }
         let shiin = {
             "あかさたなはまやらわがざだぱば":"a",
@@ -65,9 +68,15 @@ class Word{
                 roma += boin[i];
             }
         }
-        //"しゃ"とかそういうやつ（ここはできてない）
+        //"しゃ"とかそういうやつ(無理だった)
         for(let i in small){
             if(i.includes(hiragana)){
+                console.log(roma.length);
+                let tempRoma = "";
+                for(let j = 0;j<roma.length-1;j++){
+                    tempRoma += roma[j];
+                }
+                roma = tempRoma;
                 roma += small[i];
             }
         }
@@ -77,6 +86,13 @@ class Word{
             }
         }
         return roma;
+    }
+
+    timeProcess(frame){
+        if(frame%60 == 0){
+            this.limitTime -= 1;
+        }
+        return this.limitTime;
     }
 }
 

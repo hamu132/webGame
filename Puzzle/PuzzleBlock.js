@@ -1,5 +1,6 @@
 class PuzzleBlock{
     constructor(x,y,color,canvas){
+        //xとyはブロックの中心座標
         this.x = x;
         this.y = y;
         this.reset(color);
