@@ -76,8 +76,9 @@ class ShootingGame{
                 this.ctx.beginPath();
                 this.ctx.rect(block.x, block.y, block.width, block.height);
                 this.ctx.fillStyle = block.color;
+                this.ctx.lineWidth = 3;
                 this.ctx.fill();
-                this.ctx.closePath();
+                this.ctx.stroke();
             }
             else if(!block.item.isBroken && block.item.item!=null){
                 block.item.advance();
@@ -85,7 +86,7 @@ class ShootingGame{
                 this.ctx.rect(block.item.x, block.item.y, block.item.width, block.item.height);
                 this.ctx.fillStyle = block.color;
                 this.ctx.fill();
-                this.ctx.closePath();
+                this.ctx.stroke();
             }
         }
     }

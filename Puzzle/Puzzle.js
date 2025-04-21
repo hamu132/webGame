@@ -36,7 +36,6 @@ class PuzzleGame{
         this.drawBlocks(mouseX,mouseY);
         this.drawPoint();
         this.drawLimitTime();
-        this.drawLimitTime
     }
     //クリック
     handleClick(mouseX, mouseY) {
@@ -66,6 +65,16 @@ class PuzzleGame{
                 this.blocks.push(block);
             }
         }
+        //選択できるやつが2つ以上生成されなかった時用
+        let count = 0;
+        for(let block in this.blocks){
+            if(block.color == this.rectItem){
+                count++;
+            }
+        }
+        if(count<2){
+            this.createBlocks();
+        }
     }
     liner(l,a,b,min){
         const y = l * (this.frame-a) + b
@@ -86,17 +95,59 @@ class PuzzleGame{
     drawLimitTime(){
         this.ctx.save();
         this.ctx.beginPath();
+        this.ctx.fillStyle = "red";
         //長さを取得
         const length = 215;
         const l = length/300;
-
-        this.ctx.rect(25,220,                          this.liner(-l,0,length),5);
+        
+        this.ctx.rect(25,220,                          this.liner(-l,0,length),5  );
         this.ctx.rect(20,this.liner(l,300,220),        5,this.liner(-l,300,length));
         this.ctx.rect(this.liner(l,600,20),220+length, this.liner(-l,600,length),5);
         this.ctx.rect(20+length,225,                   5,this.liner(-l,900,length));
+        this.ctx.fill();
 
-        this.ctx.closePath();
         this.ctx.restore();
+    }
+    //得点対象に星を描画
+    drawStar(block){
+        let alpha = this.frame/60;
+        if(alpha>1){
+            alpha = 1;
+        }
+        this.ctx.fillStyle = `rgba(255, 255, 0, ${alpha})`;
+        const l = block.height/4
+        if(block.color == this.plusItem){
+            
+            this.ctx.beginPath();
+            this.ctx.moveTo(block.x, block.y-l);
+            this.ctx.lineTo(block.x+l*Math.sqrt(3)/2, block.y+l/2);
+            this.ctx.lineTo(block.x-l*Math.sqrt(3)/2, block.y+l/2);
+            this.ctx.fill();
+            this.ctx.closePath();
+            
+            this.ctx.beginPath();
+            this.ctx.moveTo(block.x, block.y+l);
+            this.ctx.lineTo(block.x+l*Math.sqrt(3)/2, block.y-l/2);
+            this.ctx.lineTo(block.x-l*Math.sqrt(3)/2, block.y-l/2);
+            this.ctx.fill();
+            this.ctx.closePath();
+        }
+        if(block.color == this.minusItem){
+            this.ctx.fillStyle = `rgba(140, 0, 140, ${alpha})`;
+            this.ctx.beginPath();
+            this.ctx.translate(block.x,block.y);
+            this.ctx.rotate(-Math.PI/4);
+            this.ctx.translate(-block.x,-block.y);
+            this.ctx.rect(block.x - l,block.y-l/5,l*2,l/5);
+            this.ctx.fill();
+            this.ctx.beginPath();
+            this.ctx.translate(block.x,block.y);
+            this.ctx.rotate(Math.PI/2);
+            this.ctx.translate(-block.x,-block.y);
+            this.ctx.rect(block.x - l,block.y-l/5,l*2,l/5);
+            this.ctx.fill();
+        }
+
     }
     //ブロックを描画
     drawBlocks(mouseX,mouseY){
@@ -148,11 +199,13 @@ class PuzzleGame{
                 block.mouseHover(mouseX,mouseY,this.rectItem);
             }
             
-            
             this.ctx.fillStyle = block.choiseColor();
+            this.ctx.strokeStype = "black";
+            this.ctx.lineWidth = 3;
             this.ctx.rect(block.x-block.width/2, block.y-block.height/2, block.width, block.height);
             this.ctx.fill();
-            this.ctx.closePath();
+            this.ctx.stroke();
+            this.drawStar(block);
             this.ctx.restore();
         }
         //リセット
@@ -169,6 +222,7 @@ class PuzzleGame{
     //ブロックのポイントを表示
     drawPoint(){
         this.ctx.font = '50px Roboto medium';
+        this.ctx.beginPath();
         this.ctx.fillText('SELECT:'+this.rectItem, this.canvas.width/6, 500);
         this.ctx.fillText('PLUS:'+this.plusItem, this.canvas.width/6, 550);
         this.ctx.fillText('MINUS:'+this.minusItem, this.canvas.width/6, 600);

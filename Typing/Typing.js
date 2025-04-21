@@ -64,6 +64,7 @@ class Typing{
         this.word.scale*=1.002;
         this.ctx.save();
         //ちょっとずつ大きくなってくやつ
+        this.ctx.beginPath();
         this.ctx.translate(this.canvas.width*0.7, this.canvas.height*0.75);
         this.ctx.scale(this.word.scale,this.word.scale);
         this.ctx.rotate(this.word.angle);
@@ -84,7 +85,6 @@ class Typing{
         let w = this.ctx.measureText(hiragana).width;
         //制限時間バー
         this.ctx.rect(this.canvas.width/2 - w/2, this.canvas.height*0.53,w*(1-this.frame/(60*this.word.maxTime)),5);
-
         //ローマ字の描画
         this.ctx.font = "24px sans-serif";
         const roma = this.word.roma;
@@ -104,7 +104,6 @@ class Typing{
             this.ctx.fillText(ch, x+charWidth/2-romaWidth/2, this.canvas.height/2.2);
             x += charWidth;
         }
-        
         this.ctx.restore();
         //this.ctx.fillText(this.word.limitTime,700,700);
     }

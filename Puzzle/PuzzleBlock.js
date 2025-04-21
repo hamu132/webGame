@@ -28,7 +28,6 @@ class PuzzleBlock{
                     this.width = 40;
                     this.height = 40;
                 }
-
             }
         }
         //ホバーから離れる
@@ -49,8 +48,6 @@ class PuzzleBlock{
                 return "green";
         }
     }
-
-
 }
 
 
