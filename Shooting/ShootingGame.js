@@ -7,9 +7,11 @@ import Item from './Item.js';
 
 class ShootingGame{
     constructor(height,canvas,ctx){
+        this.paddleFrame = 0;
+        this.scoreRate = 1;
         this.mouseX = 0;
         this.mouseY = 0;
-        
+        this.scoreRate = 1;
         this.paddle = new Paddle(canvas,ctx);
         this.ball = new Ball(this.paddle);
         this.score = new Score();
@@ -35,10 +37,21 @@ class ShootingGame{
     }
     //マウスのx座標に追従
     paddleDraw(mouseX){
+        if(this.paddleFrame>0){
+            this.paddleFrame-=1;
+            this.paddle.width = 200;
+        }
+        else{
+            this.paddle.width = 100;
+        }
         this.paddle.setx(mouseX,this.canvas.height);
         this.ctx.beginPath();
-        this.ctx.rect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
         this.ctx.fillStyle = "green";
+        this.ctx.rect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
+        this.ctx.fill();
+        this.ctx.beginPath();
+        this.ctx.fillStyle = "red";
+        this.ctx.rect(this.paddle.x, this.paddle.y+7, this.paddle.width*this.paddleFrame/600, this.paddle.height-7); //frame=0:全く描画されない＆frame=600:width分描画
         this.ctx.fill();
         this.ctx.closePath();
     }
@@ -51,18 +64,24 @@ class ShootingGame{
         const padding = 10;
         const offsetX = 50;
         const offsetY = 50;
-        const itemList = ["speedUp","speedDown","bigSize","smallSize","penetrate",null,null,null,null,null,null,null,null,null];
-        const pointList = [1,0,0];
-        const colorList = ["red","green","green"]
+        const itemList = ["bigSize","pointUp"];
+        const pointList = [1,1,0,0];
+        const colorList = ["red","red","green","blue"];
     
         for(let row = 0; row < rows; row++){
             for(let col = 0; col < cols; col++){
-                const index = Math.floor(Math.random()*3);
+                const index = Math.floor(Math.random()*4);
                 const point = pointList[index];
                 const color = colorList[index];
                 const x = offsetX + col * (blockWidth + padding);
                 const y = offsetY + row * (blockHeight + padding);
-                const itemName = itemList[Math.floor(Math.random()*itemList.length)];
+                let itemName;
+                if(color == "blue"){
+                    itemName = itemList[Math.floor(Math.random()*itemList.length)];
+                }
+                else{
+                    itemName = null;
+                }
                 const item = new Item(x,y,itemName);
                 const block = new Block(x, y, blockWidth, blockHeight, point, color, item);
                 this.blocks.push(block);
@@ -81,12 +100,28 @@ class ShootingGame{
                 this.ctx.stroke();
             }
             else if(!block.item.isBroken && block.item.item!=null){
+                console.log(block.item.item);
                 block.item.advance();
+                this.ctx.save();
                 this.ctx.beginPath();
-                this.ctx.rect(block.item.x, block.item.y, block.item.width, block.item.height);
-                this.ctx.fillStyle = block.color;
+                if(block.item.item == "bigSize"){
+                    this.ctx.fillStyle = "green";
+                    this.ctx.translate(block.item.x, block.item.y);
+                    this.ctx.rotate(-Math.PI/6);
+                    this.ctx.translate(-block.item.x, -block.item.y);
+                    this.ctx.rect(block.item.x, block.item.y, 20, 6);
+                }
+                else if(block.item.item == "pointUp"){
+                    this.ctx.font = 'bold 12px Arial Black';
+                    this.ctx.fillStyle = "red";
+                    this.ctx.textBaseline = "middle";
+                    this.ctx.textAlign = "center";
+                    this.ctx.fillText("P↑",block.item.x,block.item.y);
+                }
+                
                 this.ctx.fill();
                 this.ctx.stroke();
+                this.ctx.restore();
             }
         }
     }
@@ -118,33 +153,24 @@ class ShootingGame{
                 if(blockRate === 1){
                     this.ball.yspeed = -this.ball.yspeed;
                     block.isBroken = true;
-                    this.score.pointUp(block);
+                    this.score.pointUp(block,this.scoreRate);
                     break;
                 }
                 if(blockRate === 2){
                     this.ball.xspeed = -this.ball.xspeed;
                     block.isBroken = true;
-                    this.score.pointUp(block);
+                    this.score.pointUp(block,this.scoreRate);
                     break;
                 }
             }
             else if(!block.item.isBroken){
                 const itemName = block.item.checkCollision(this.paddle.x,this.paddle.y,this.paddle.width);
                 switch (itemName){
-                    case "speedUp":
-                        this.ball.yspeed*=1.5;
-                        break;
-                    case "speedDown":
-                        this.ball.yspeed*=0.67;
-                        break;
                     case "bigSize":
-                        this.paddle.width =200;
+                        this.paddleFrame = 600;
                         break;
-                    case "smallSize":
-                        this.paddle.width =50;
-                        break;
-                    case "penetrate":
-                        break;
+                    case "pointUp":
+                        this.scoreRate ++;
                 }
 
             }
@@ -164,10 +190,10 @@ class ShootingGame{
 
 
     }
-
+    //毎フレーム
     gamePlay(mouseX,mouseY){
         this.mouseMove(mouseX,mouseY);//マウス座標を記録
-
+        
         this.circle(this.ball);//ボール
         this.paddleDraw(this.mouseX);//打ち返し用の板
         this.drawBlocks();//ブロック

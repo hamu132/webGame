@@ -40,11 +40,11 @@ class PuzzleBlock{
     }
     choiseColor(){
         switch(this.color){
-            case "B":
+            case "blue":
                 return "blue";
-            case "R":
+            case "red":
                 return "red";
-            case "G":
+            case "green":
                 return "green";
         }
     }

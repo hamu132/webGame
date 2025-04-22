@@ -2,8 +2,8 @@ class Score{
     constructor(){
         this.score = 0;
     }
-    pointUp(block){
-        this.score += block.score;
+    pointUp(block,rate){
+        this.score += rate * block.score;
     }
     getPoint(){
         return this.score;

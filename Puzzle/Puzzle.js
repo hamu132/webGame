@@ -10,16 +10,20 @@ class PuzzleGame{
         this.blocks = [];
         this.mouseX = 0;
         this.mouseY = 0;
+        this.offsetX = 80;
+        this.offsetY = 250;
         this.createBlocks();
         this.canvas.addEventListener("click", () => {
             this.handleClick(this.mouseX, this.mouseY);
         });
 
         this.GroupBlock = new GroupBlock();
-        this.plusItem = "R";
-        this.minusItem = "G";
-        this.rectItem = "B";
+        this.plusItem = "red";
+        this.minusItem = "green";
+        this.rectItem = "blue";
         this.score = 0;
+
+
     }
     //毎フレーム
     gamePlay(mouseX,mouseY){
@@ -52,14 +56,14 @@ class PuzzleGame{
         const rows = 5;
         const cols = 5;
         const padding = 40;
-        const offsetX = 50;
-        const offsetY = 250;
-        const blockColor = ["R","G","B"]
+        // const offsetX = 50;
+        // const offsetY = 250;
+        const blockColor = ["red","green","blue"]
     
         for(let row = 0; row < rows; row++){
             for(let col = 0; col < cols; col++){
-                const x = offsetX + col * (padding);
-                const y = offsetY + row * (padding);
+                const x = this.offsetX + col * (padding);
+                const y = this.offsetY + row * (padding);
                 const color = blockColor[Math.floor(Math.random()*blockColor.length)];
                 const block = new PuzzleBlock(x, y,color,this.canvas);
                 this.blocks.push(block);
@@ -100,10 +104,10 @@ class PuzzleGame{
         const length = 215;
         const l = length/300;
         
-        this.ctx.rect(25,220,                          this.liner(-l,0,length),5  );
-        this.ctx.rect(20,this.liner(l,300,220),        5,this.liner(-l,300,length));
-        this.ctx.rect(this.liner(l,600,20),220+length, this.liner(-l,600,length),5);
-        this.ctx.rect(20+length,225,                   5,this.liner(-l,900,length));
+        this.ctx.rect(this.offsetX-25,220,                          this.liner(-l,0,length),5  );
+        this.ctx.rect(this.offsetX-30,this.liner(l,300,220),        5,this.liner(-l,300,length));
+        this.ctx.rect(this.offsetX-50+this.liner(l,600,20),220+length, this.liner(-l,600,length),5);
+        this.ctx.rect(this.offsetX-30+length,225,                   5,this.liner(-l,900,length));
         this.ctx.fill();
 
         this.ctx.restore();
@@ -187,7 +191,7 @@ class PuzzleGame{
                 else{
                     //ブロックの値をリセット
                     num=1;
-                    const blockColor = ["R","G","B"];
+                    const blockColor = ["red","green","blue"];
                     const color = blockColor[Math.floor(Math.random()*blockColor.length)];
                     block.reset(color);
                     this.frame = 0;
@@ -221,11 +225,34 @@ class PuzzleGame{
     }
     //ブロックのポイントを表示
     drawPoint(){
-        this.ctx.font = '50px Roboto medium';
+        this.ctx.font = '20px Roboto medium';
+        
         this.ctx.beginPath();
-        this.ctx.fillText('SELECT:'+this.rectItem, this.canvas.width/6, 500);
-        this.ctx.fillText('PLUS:'+this.plusItem, this.canvas.width/6, 550);
-        this.ctx.fillText('MINUS:'+this.minusItem, this.canvas.width/6, 600);
+        this.ctx.fillStyle = "red";
+        this.ctx.fillText('SELECT:', this.offsetX-30, 500);
+
+        this.ctx.beginPath();
+        this.ctx.fillStyle = this.rectItem;
+        this.ctx.rect(150,500,20,-20);
+        this.ctx.stroke();
+        this.ctx.fill();
+
+        this.ctx.beginPath();
+        this.ctx.fillStyle = "red";
+        this.ctx.fillText('SCORE:', this.offsetX-30, 550);
+        
+        this.ctx.beginPath();
+        this.ctx.fillStyle = this.plusItem;
+        this.ctx.rect(150,550,20,-20);
+        this.ctx.stroke();
+        this.ctx.fill();
+
+        this.ctx.beginPath();
+        this.ctx.fillStyle = this.minusItem;
+        this.ctx.rect(220,550,20,-20);
+        
+        this.ctx.stroke();
+        this.ctx.fill();
         //this.ctx.fillText('SCORE:'+this.score, this.canvas.width/6, 700);
     }
 

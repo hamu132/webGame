@@ -2,10 +2,16 @@ class Item{
     constructor(x,y,itemName){
         this.x = x;
         this.y = y;
-        this.width = 10;
-        this.height = 10;
         this.isBroken = false;
         this.item = itemName;
+        if(itemName == "pointUp"){
+            this.width = 10;
+            this.height = 10;
+        }
+        if(itemName == "bigSize"){
+            this.width = 17;
+            this.height = 8;
+        }
     }
     advance(){
         this.y+=2;
