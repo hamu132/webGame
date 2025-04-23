@@ -1,9 +1,11 @@
 import { ShootingGame } from "./Shooting/ShootingGame.js";
 import { PuzzleGame } from "./Puzzle/Puzzle.js";
 import { Typing } from "./Typing/Typing.js";
+import { StageSelect } from "./SelectStage/stageSelect.js";
 
 class Game{
     constructor(){
+        this.stage = 0; //0:選択画面 1&2:ボール 3&4:パズル 5&6:タイピング 7:全て
         this.frame = 0;
         this.canvas = document.getElementById("canvas")
         this.ctx = this.canvas.getContext("2d");
@@ -15,6 +17,7 @@ class Game{
         this.shootingGame = new ShootingGame(this.height,this.canvas,this.ctx);
         this.puzzleGame = new PuzzleGame(this.canvas,this.ctx);
         this.typing = new Typing(this.canvas,this.ctx);
+        this.stageSelect = new StageSelect(this.canvas,this.ctx);
     }
     //マウス位置を取得
     mouseMove(){
@@ -86,11 +89,36 @@ class Game{
         this.frame++;
         this.height = this.canvas.height;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);//前のフレームを消す
-        this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
-        this.puzzleGame.gamePlay(this.mouseX,this.mouseY);//パズル
-        this.typing.gamePlay();//タイピング
-        this.drawScore();
+
+        if(this.stage != this.stageSelect.nextStage){//ステージ変更
+            this.reset();
+            this.stage = this.stageSelect.nextStage;
+        }
+        switch(this.stage){
+            case 0:
+                this.stageSelect.display(this.mouseX,this.mouseY);
+                break;
+            case 1:
+                this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
+                this.explain("shoot");
+                if(this.shootingGame.score.score>=10){
+                    this.stage = 0;
+                }
+                break;
+            case 8:
+                this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
+                this.puzzleGame.gamePlay(this.mouseX,this.mouseY);//パズル
+                this.typing.gamePlay();//タイピング
+                this.drawScore();
+                break;
+        }
+
         requestAnimationFrame(this.update.bind(this));
+    }
+    explain(game){
+        this.ctx.beginPath();
+        this.ctx.rect(50,600,700,150);
+        this.ctx.stroke();
     }
 }
 

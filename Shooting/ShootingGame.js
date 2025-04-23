@@ -8,7 +8,7 @@ import Item from './Item.js';
 class ShootingGame{
     constructor(height,canvas,ctx){
         this.paddleFrame = 0;
-        this.scoreRate = 1;
+        this.ballFrame = 0;
         this.mouseX = 0;
         this.mouseY = 0;
         this.scoreRate = 1;
@@ -28,12 +28,20 @@ class ShootingGame{
     // ボール
     circle(ball){
         let { x, y } = ball.advance(this.mouseX, this.mouseY);
+        this.ctx.fillStyle = "black";
+        if(this.ballFrame>0){
+            this.ballFrame-=1;
+            this.scoreRate = 2;
+            this.ctx.fillStyle = "red"
+        }
+        else{
+            this.scoreRate = 1;
+        }
         var radius = ball.radius;
         this.ctx.beginPath();
         this.ctx.arc(x, y, radius, 0, Math.PI * 2);
-        this.ctx.fillStyle = "black";
         this.ctx.fill();
-        this.ctx.closePath();
+        this.ctx.stroke();
     }
     //マウスのx座標に追従
     paddleDraw(mouseX){
@@ -100,7 +108,6 @@ class ShootingGame{
                 this.ctx.stroke();
             }
             else if(!block.item.isBroken && block.item.item!=null){
-                console.log(block.item.item);
                 block.item.advance();
                 this.ctx.save();
                 this.ctx.beginPath();
@@ -127,12 +134,14 @@ class ShootingGame{
     }
     //総合得点を表示
     drawPoint(){
-        this.ctx.font = '100px Roboto medium';
-        this.ctx.textAlign = "center";
-        this.ctx.fillText('Point', this.canvas.width/2, 400);
-        this.ctx.fillText(this.score.getPoint(), this.canvas.width/2, 500);
-        this.ctx.font = '50px Roboto medium';
-        this.ctx.fillText('Life:'+this.life, this.canvas.width/6, 400);
+        this.ctx.font = '40px Roboto medium';
+        this.ctx.fillStyle = "black";
+        const x = 450;
+        this.ctx.beginPath();
+        this.ctx.fillText('Point：', x, 600);
+        this.ctx.fillText(this.score.getPoint(), x+this.ctx.measureText("Point：").width, 600);
+        this.ctx.fillText('Life：', x, 550);
+        this.ctx.fillText("♥".repeat(this.life), x+this.ctx.measureText("Life：").width, 550);
         
     }
 
@@ -170,7 +179,8 @@ class ShootingGame{
                         this.paddleFrame = 600;
                         break;
                     case "pointUp":
-                        this.scoreRate ++;
+                        this.ballFrame = 600;
+                        break;
                 }
 
             }
@@ -198,7 +208,7 @@ class ShootingGame{
         this.paddleDraw(this.mouseX);//打ち返し用の板
         this.drawBlocks();//ブロック
         this.checkPaddleCollision();//衝突判定
-        //this.drawPoint();//得点
+        this.drawPoint();//得点
     }
     mouseMove(mouseX,mouseY){
         this.mouseX = mouseX;
