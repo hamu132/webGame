@@ -1,15 +1,16 @@
 import StageRect from "./stageRect.js";
 class StageSelect{
-    constructor(canvas,ctx){
+    constructor(clickManager,canvas,ctx){
         this.frame = 0;
         this.canvas = canvas;
         this.ctx = ctx;
         this.buttons = [];
         this.createButton();
-        this.nextStage = 0;
-        this.canvas.addEventListener("click",()=>{
-            this.nextStage = this.clickJudge();
-        })
+        this.nextStage = new StageRect(0,0,0,0,0,0,0);
+        clickManager.addClickHandler(this.clickJudge.bind(this));
+        // this.canvas.addEventListener("click",()=>{
+        //     this.nextStage = this.clickJudge();
+        // })
     }
     display(mouseX,mouseY){
         this.frame++;
@@ -28,10 +29,10 @@ class StageSelect{
     clickJudge(){
         for(const b of this.buttons){
             if(b.isHovered){
-                return b.stageNum;
+                this.nextStage = b;
+                return;
             }
         }
-        return 0;
     }
     drawRoad(){
         let prevX;

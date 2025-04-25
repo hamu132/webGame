@@ -6,7 +6,7 @@ import Item from './Item.js';
 
 
 class ShootingGame{
-    constructor(height,canvas,ctx){
+    constructor(clickManager,canvas,ctx){
         this.paddleFrame = 0;
         this.ballFrame = 0;
         this.mouseX = 0;
@@ -20,11 +20,11 @@ class ShootingGame{
         this.createBlocks();
         this.canvas = canvas;
         this.ctx = ctx;
-        this.canvas.addEventListener("click",()=>{
-            this.ball.isClicked=true;
-        })
+        clickManager.addClickHandler(this.click.bind(this));
     }
-
+    click(){
+        this.ball.isClicked=true;
+    }
     // ボール
     circle(ball){
         let { x, y } = ball.advance(this.mouseX, this.mouseY);

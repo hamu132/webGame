@@ -4,6 +4,8 @@ import { Typing } from "./Typing/Typing.js";
 import { StageSelect } from "./SelectStage/stageSelect.js";
 import { AnimationManager }  from "./AminationManager.js";
 import { FinalStage } from "./finalStage.js";
+import { GameExplain } from "./GameExplain.js";
+import { ClickManager } from "./ClickManager.js";
 
 class Game{
     constructor(){
@@ -14,13 +16,16 @@ class Game{
         this.width = this.canvas.width;
         this.mouseX = 0;
         this.mouseY = 0;
+        this.clickManager = new ClickManager(this.canvas);
         this.animationManager = new AnimationManager(this.canvas,this.ctx);
-        this.shootingGame = new ShootingGame(this.height,this.canvas,this.ctx);
+        this.shootingGame = new ShootingGame(this.clickManager,this.canvas,this.ctx);
         this.puzzleGame = new PuzzleGame(this.canvas,this.ctx);
         this.typing = new Typing(this.canvas,this.ctx);
         this.finalStage = new FinalStage();
-        this.stageSelect = new StageSelect(this.canvas,this.ctx);
-        this.currentStageNum = 0;//0:選択画面 1&2:ボール 3&4:パズル 5&6:タイピング 7:全て
+        this.stageSelect = new StageSelect(this.clickManager,this.canvas,this.ctx);
+        this.gameExplain = new GameExplain(this.clickManager,this.canvas,this.ctx);
+        this.currentStageNum1 = 0;//0:選択画面 1&2:ボール 3&4:パズル 5&6:タイピング 7:全て
+        this.currentStageNum2 = 0;//0:選択画面 1&2:ボール 3&4:パズル 5&6:タイピング 7:全て
     }
     //マウス位置を取得
     mouseMove(){
@@ -32,7 +37,7 @@ class Game{
     //ここでリトライ機能をつける
     reset(){
         this.frame = 0;
-        this.shootingGame = new ShootingGame(this.height, this.canvas, this.ctx);
+        this.shootingGame = new ShootingGame(this.clickManager, this.canvas, this.ctx);
         this.puzzleGame = new PuzzleGame(this.canvas, this.ctx);
         this.typing.destroy();
         this.typing = new Typing(this.canvas,this.ctx);
@@ -47,7 +52,10 @@ class Game{
         //     }
         // });
         this.update();
+
     }
+
+
     //どのステージを描画するか（毎フレーム）
     update(){
         this.frame++;
@@ -66,44 +74,47 @@ class Game{
         //それ以外：ステージ選択に戻るときは縮小しながら元に戻る
         //選択画面は常に外部でも動いてる感じがいいのか
         const { x, y,stageNum} = this.stageSelect.nextStage;
-        if(this.currentStageNum != stageNum){//ステージ変更
+        if(this.currentStageNum1 != stageNum){//ステージ変更
             this.reset();
             this.animationManager.isAnimation = true;
-            this.currentStageNum = stageNum; 
+            this.currentStageNum1 = stageNum; 
             console.log("reset");
         }
         
-        //アニメーション
-        this.animationManager.selectToStage1(x,y,this.frame);
+        //アニメーション1
+        let stageChangeFlag = this.animationManager.selectToStage1(x,y,this.frame);
+        if(stageChangeFlag == 1){
+            this.currentStageNum2 = this.currentStageNum1;
+        }
 
-        this.stageSelect.display(this.mouseX,this.mouseY); //選択画面(常に)
+        //this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
+        switch(this.currentStageNum2){
+            case 0:
+                this.stageSelect.display(this.mouseX,this.mouseY); //選択画面
+                break;
+            case 1:
+                this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
+                this.gameExplain.explainShoot();//説明
+                if(this.shootingGame.score.score>=10){
+                    this.currentStage = 0;
+                }
+                break;
+            case 8:
+                this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
+                this.puzzleGame.gamePlay(this.mouseX,this.mouseY);//パズル
+                this.typing.gamePlay();//タイピング
+                this.drawScore();
+                break;
+        }
+
+        //白
         this.animationManager.selectToStage2(this.frame);
-        // switch(this.currentStage){
-        //     case 0:
-        //         this.stageSelect.display(this.mouseX,this.mouseY); //選択画面
-        //         break;
-        //     case 1:
-        //         this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
-        //         this.explain("shoot");
-        //         if(this.shootingGame.score.score>=10){
-        //             this.currentStage = 0;
-        //         }
-        //         break;
-        //     case 8:
-        //         this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
-        //         this.puzzleGame.gamePlay(this.mouseX,this.mouseY);//パズル
-        //         this.typing.gamePlay();//タイピング
-        //         this.drawScore();
-        //         break;
-        // }
+
+        
         this.ctx.restore();
         requestAnimationFrame(this.update.bind(this));//毎フレーム更新？
     }
-    explain(game){
-        this.ctx.beginPath();
-        this.ctx.rect(50,600,700,150);
-        this.ctx.stroke();
-    }
+
 }
 
 
