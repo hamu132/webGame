@@ -74,6 +74,7 @@ class Game{
         //それ以外：ステージ選択に戻るときは縮小しながら元に戻る
         //選択画面は常に外部でも動いてる感じがいいのか
         const { x, y,stageNum} = this.stageSelect.nextStage;
+        const isAnimation = this.animationManager.isAnimation;
         if(this.currentStageNum1 != stageNum){//ステージ変更
             this.reset();
             this.animationManager.isAnimation = true;
@@ -94,7 +95,7 @@ class Game{
                 break;
             case 1:
                 this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
-                this.gameExplain.explainShoot();//説明
+                this.gameExplain.explain(isAnimation,"shoot");//説明
                 if(this.shootingGame.score.score>=10){
                     this.currentStage = 0;
                 }
