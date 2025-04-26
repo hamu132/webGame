@@ -17,8 +17,6 @@ class AnimationManager{
                 return 1;
             }
             this.ctx.save();
-
-
             this.ctx.translate(x,y);
             this.ctx.scale(scale,scale);
             this.ctx.translate(-x,-y);

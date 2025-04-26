@@ -94,8 +94,9 @@ class Game{
                 this.stageSelect.display(this.mouseX,this.mouseY); //選択画面
                 break;
             case 1:
-                this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
-                this.gameExplain.explain(isAnimation,"shoot");//説明
+                let isExplainEnd;
+                isExplainEnd = this.gameExplain.explain(isAnimation,"shoot");//説明
+                this.shootingGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd);//シューティング
                 if(this.shootingGame.score.score>=10){
                     this.currentStage = 0;
                 }

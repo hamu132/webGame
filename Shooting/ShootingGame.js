@@ -7,6 +7,7 @@ import Item from './Item.js';
 
 class ShootingGame{
     constructor(clickManager,canvas,ctx){
+        this.isExplainEnd = false;
         this.paddleFrame = 0;
         this.ballFrame = 0;
         this.mouseX = 0;
@@ -23,7 +24,10 @@ class ShootingGame{
         clickManager.addClickHandler(this.click.bind(this));
     }
     click(){
-        this.ball.isClicked=true;
+        if(this.isExplainEnd){
+            this.ball.isClicked=true;
+        }
+
     }
     // ボール
     circle(ball){
@@ -201,11 +205,14 @@ class ShootingGame{
 
     }
     //毎フレーム
-    gamePlay(mouseX,mouseY){
-        this.mouseMove(mouseX,mouseY);//マウス座標を記録
-        
-        this.circle(this.ball);//ボール
-        this.paddleDraw(this.mouseX);//打ち返し用の板
+    gamePlay(mouseX,mouseY,isExplainEnd){
+        this.isExplainEnd = isExplainEnd;
+        if(isExplainEnd){
+            this.mouseMove(mouseX,mouseY);//マウス座標を記録
+            this.circle(this.ball);//ボール
+            this.paddleDraw(this.mouseX);//打ち返し用の板
+        }
+
         this.drawBlocks();//ブロック
         this.checkPaddleCollision();//衝突判定
         this.drawPoint();//得点
