@@ -26,8 +26,11 @@ class PuzzleGame{
 
     }
     //毎フレーム
-    gamePlay(mouseX,mouseY){
-        this.frame++;
+    gamePlay(mouseX,mouseY,isExplainEnd){
+        if(isExplainEnd){
+            this.frame++;
+        }
+        
         if(this.frame%60==0){
             this.limitTime-=1;
         }

@@ -1,5 +1,5 @@
 class StageRect{
-    constructor(canvas,ctx,x,y,stageName,isReady,stageNum){
+    constructor(canvas,ctx,x,y,stageName,isReady,stageNum,connectNum){
         this.canvas = canvas;
         this.ctx = ctx;
         this.x = x;
@@ -10,6 +10,7 @@ class StageRect{
         this.isHovered = false;
         this.isReady = isReady;
         this.stageNum = stageNum;
+        this.connectNum = connectNum;
     }
     mouseHover(){
         this.isHovered = true;

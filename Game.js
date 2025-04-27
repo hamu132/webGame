@@ -10,6 +10,7 @@ import { ClickManager } from "./ClickManager.js";
 class Game{
     constructor(){
         this.frame = 0;
+        
         this.canvas = document.getElementById("canvas");
         this.ctx = this.canvas.getContext("2d");
         
@@ -59,7 +60,7 @@ class Game{
     click(){
         if(this.clearRectframe!=0){
             //console.log("a");/////////////////////////////////////////
-            this.stageSelect.returnStageSelect();
+            this.stageSelect.returnStageSelect(this.currentStageNum1);
         }
     }
     //クリア（ステージ共通）
@@ -106,15 +107,13 @@ class Game{
         //実際の描画ステージが変更
         //最後まで終わったらanimationが更新
         const { x, y,stageNum} = this.stageSelect.nextStage;
-        //console.log(this.stageSelect.nextStage);
-        ///????
+
 
         const isAnimation = this.animationManager.isAnimation;
         if(this.currentStageNum1 != stageNum){//ステージ変更(変更アニメーションが始まる直前に一回だけ。this.currentStageNum1とstageNumは次の数字になる。)
             this.frame = 0;
             this.animationManager.isAnimation = true;
-            this.currentStageNum1 = stageNum; 
-            
+            this.currentStageNum1 = stageNum;
         }
         
         
@@ -128,17 +127,29 @@ class Game{
         }
 
         //this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
+        let isExplainEnd;
         switch(this.currentStageNum2){
             case 0:
                 this.stageSelect.display(this.mouseX,this.mouseY); //選択画面
                 break;
             case 1:
-                let isExplainEnd;
                 isExplainEnd = this.gameExplain.explain(isAnimation,"shoot");//説明
                 this.shootingGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd);//シューティング
                 if(this.shootingGame.score.score>=1){
                     this.clear();
                 }
+                break;
+            case 2:
+                isExplainEnd = this.gameExplain.explain(isAnimation,"shootEndless");//説明
+                this.shootingGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd);//シューティング
+                if(this.shootingGame.score.score>=100000){
+                    this.clear();
+                }
+                break;
+
+            case 3:
+                isExplainEnd = this.gameExplain.explain(isAnimation,"puzzle");//説明
+                this.puzzleGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd);//パズル
                 
                 break;
             case 8:
@@ -151,7 +162,7 @@ class Game{
 
         //白
         this.animationManager.selectToStage2(this.frame);
-        //console.log(stageNum,this.currentStageNum1,this.currentStageNum2);///////////////////////////////////////////////////////
+        console.log(stageNum,this.currentStageNum1,this.currentStageNum2);///////////////////////////////////////////////////////
         
         this.ctx.restore();
         requestAnimationFrame(this.update.bind(this));//毎フレーム更新？
