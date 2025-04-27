@@ -10,7 +10,8 @@ class PuzzleGame{
         this.blocks = [];
         this.mouseX = 0;
         this.mouseY = 0;
-        this.offsetX = 80;
+        //80
+        this.offsetX = 320;
         this.offsetY = 250;
         this.createBlocks();
         this.canvas.addEventListener("click", () => {
@@ -26,9 +27,14 @@ class PuzzleGame{
 
     }
     //毎フレーム
-    gamePlay(mouseX,mouseY,isExplainEnd){
+    gamePlay(mouseX,mouseY,isExplainEnd,offsetX,offsetY){
+        this.offsetX = offsetX;
+        this.offsetY = offsetY
         if(isExplainEnd){
             this.frame++;
+        }
+        else{
+            this.frame = 50;
         }
         
         if(this.frame%60==0){
@@ -123,6 +129,7 @@ class PuzzleGame{
         }
         this.ctx.fillStyle = `rgba(255, 255, 0, ${alpha})`;
         const l = block.height/4
+        this.ctx.save();
         if(block.color == this.plusItem){
             
             this.ctx.beginPath();
@@ -154,6 +161,7 @@ class PuzzleGame{
             this.ctx.rect(block.x - l,block.y-l/5,l*2,l/5);
             this.ctx.fill();
         }
+        this.ctx.restore();
 
     }
     //ブロックを描画
@@ -228,35 +236,29 @@ class PuzzleGame{
     }
     //ブロックのポイントを表示
     drawPoint(){
-        this.ctx.font = '20px Roboto medium';
+        
+        this.ctx.save();
+        
         
         this.ctx.beginPath();
         this.ctx.fillStyle = "red";
-        this.ctx.fillText('SELECT:', this.offsetX-30, 500);
+        this.ctx.font = '20px sans-serif';
+        this.ctx.fillText('SELECT:', this.offsetX-30, this.offsetY+260);
 
         this.ctx.beginPath();
         this.ctx.fillStyle = this.rectItem;
-        this.ctx.rect(150,500,20,-20);
+        this.ctx.rect(this.offsetX+80,this.offsetY+260,20,-20);
         this.ctx.stroke();
         this.ctx.fill();
 
         this.ctx.beginPath();
-        this.ctx.fillStyle = "red";
-        this.ctx.fillText('SCORE:', this.offsetX-30, 550);
-        
-        this.ctx.beginPath();
-        this.ctx.fillStyle = this.plusItem;
-        this.ctx.rect(150,550,20,-20);
-        this.ctx.stroke();
-        this.ctx.fill();
+        this.ctx.font = '30px sans-serif';
+        this.ctx.fillStyle = "black";
+        this.ctx.fillText('Score:　　'+this.score, this.offsetX+220, this.offsetY);
+        this.ctx.fillText('Life:　　'+this.life, this.offsetX+220, this.offsetY+50);
 
-        this.ctx.beginPath();
-        this.ctx.fillStyle = this.minusItem;
-        this.ctx.rect(220,550,20,-20);
-        
-        this.ctx.stroke();
-        this.ctx.fill();
-        //this.ctx.fillText('SCORE:'+this.score, this.canvas.width/6, 700);
+
+        this.ctx.restore();
     }
 
 }

@@ -23,7 +23,7 @@ class Game{
         this.shootingGame = new ShootingGame(this.clickManager,this.canvas,this.ctx,10);
         this.puzzleGame = new PuzzleGame(this.canvas,this.ctx);
         this.typing = new Typing(this.canvas,this.ctx);
-        this.finalStage = new FinalStage();
+        this.finalStage = new FinalStage(this.canvas,this.ctx);
         this.stageSelect = new StageSelect(this.clickManager,this.canvas,this.ctx);
         this.gameExplain = new GameExplain(this.clickManager,this.canvas,this.ctx);
         this.currentStageNum1 = 0;//0:選択画面 1&2:ボール 3&4:パズル 5&6:タイピング 7:全て
@@ -149,14 +149,31 @@ class Game{
 
             case 3:
                 isExplainEnd = this.gameExplain.explain(isAnimation,"puzzle");//説明
-                this.puzzleGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd);//パズル
-                
+                this.puzzleGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd,320,250);//パズル
+                if(this.puzzleGame.score>=1){
+                    this.clear();
+                }
                 break;
-            case 8:
+            case 4:
+                isExplainEnd = this.gameExplain.explain(isAnimation,"puzzleEndless");//説明
+                this.puzzleGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd,320,250);//パズル
+                break;
+            case 5:
+                isExplainEnd = this.gameExplain.explain(isAnimation,"typing");//説明
+                this.typing.gamePlay(false);//タイピング
+                if(this.typing.score>=1){
+                    this.clear();
+                }
+                break;
+            case 6:
+                isExplainEnd = this.gameExplain.explain(isAnimation,"typing");//説明
+                this.typing.gamePlay(false);//タイピング
+                break;
+            case 7:
                 this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
-                this.puzzleGame.gamePlay(this.mouseX,this.mouseY);//パズル
-                this.typing.gamePlay();//タイピング
-                this.drawScore();
+                this.puzzleGame.gamePlay(this.mouseX,this.mouseY,80,250);//パズル
+                this.typing.gamePlay(true);//タイピング
+                this.finalStage.drawScore(this.shootingGame.score.score,this.shootingGame.life,this.puzzleGame.score,this.puzzleGame.life,this.typing.score,this.typing.life);
                 break;
         }
 

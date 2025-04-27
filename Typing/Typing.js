@@ -28,14 +28,14 @@ class Typing{
         window.removeEventListener("keydown", this.boundKeyDown);
     }
     //毎フレーム呼び出される
-    gamePlay(){
+    gamePlay(mode){
         this.frame ++;
         if(this.word.timeProcess(this.frame) <= 0){
             this.life -= 1;
             this.createText();
         }
         //1~600
-        this.drawText();
+        this.drawText(mode);
     }
     //問題のテキストを選ぶ+ローマ字を取得(最初＆問題クリア時)
     createText(){
@@ -60,14 +60,17 @@ class Typing{
     }
 
     //描画
-    drawText(){
+    drawText(mode){
         this.word.scale*=1.002;
         this.ctx.save();
         //ちょっとずつ大きくなってくやつ
         this.ctx.beginPath();
-        this.ctx.translate(this.canvas.width*0.7, this.canvas.height*0.75);
+        
+        this.ctx.translate(this.canvas.width/2, this.canvas.height/2);
+        if(mode){
+            this.ctx.rotate(this.word.angle);
+        }
         this.ctx.scale(this.word.scale,this.word.scale);
-        this.ctx.rotate(this.word.angle);
         this.ctx.translate(-this.canvas.width/2, -this.canvas.height/2);
 
         
@@ -84,7 +87,9 @@ class Typing{
         this.ctx.fillText(hiragana, x, this.canvas.height/2);
         let w = this.ctx.measureText(hiragana).width;
         //制限時間バー
+        this.ctx.fillStyle = "green";
         this.ctx.rect(this.canvas.width/2 - w/2, this.canvas.height*0.53,w*(1-this.frame/(60*this.word.maxTime)),5);
+        this.ctx.fill();
         //ローマ字の描画
         this.ctx.font = "24px sans-serif";
         const roma = this.word.roma;

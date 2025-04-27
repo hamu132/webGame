@@ -1,14 +1,16 @@
 class FinalStage{
-    constructor(){
-
+    constructor(canvas,ctx){
+        this.canvas = canvas;
+        this.ctx = ctx;
+        this.angle = 0;
     }
-    drawScore(){
-        let shootScore = this.shootingGame.score.score;
-        let shootLife = this.shootingGame.life;
-        let puzzleScore = this.puzzleGame.score;
-        let puzzleLife = this.puzzleGame.life;
-        let typingScore = this.typing.score;
-        let typingLife = this.typing.life;
+    drawScore(ss,sl,ps,pl,ts,tl){
+        let shootScore = ss;
+        let shootLife = sl;
+        let puzzleScore = ps;
+        let puzzleLife = pl;
+        let typingScore = ts;
+        let typingLife = tl;
         let allScore = shootScore + puzzleScore + typingScore;
         let x = this.canvas.width/2;
         let y = this.canvas.height/2;
