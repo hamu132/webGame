@@ -20,7 +20,6 @@ class Ball{
             this.x = mouseX;
             this.y = this.initY;
         }
-        return { x: this.x, y: this.y };
     }
 }
 export default Ball;

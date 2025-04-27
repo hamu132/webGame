@@ -12,9 +12,13 @@ class AnimationManager{
         if(this.isAnimation){
             let animationTime = 0.5;
             let scale = 1+frame/5;
-            if(frame>animationTime*60){
+            if(frame==Math.floor(animationTime*60)){
                 scale = 1;
                 return 1;
+            }
+            if(frame>animationTime*60){
+                scale = 1;
+                return;
             }
             this.ctx.save();
             this.ctx.translate(x,y);

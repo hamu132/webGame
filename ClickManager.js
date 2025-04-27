@@ -10,7 +10,7 @@ class ClickManager {
     }
     addClickHandler(handler) {
         this.clickHandlers.push(handler);
-        console.log("追加");
+        //console.log(handler);
     }
 }
 

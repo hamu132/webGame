@@ -8,9 +8,6 @@ class StageSelect{
         this.createButton();
         this.nextStage = new StageRect(0,0,0,0,0,0,0);
         clickManager.addClickHandler(this.clickJudge.bind(this));
-        // this.canvas.addEventListener("click",()=>{
-        //     this.nextStage = this.clickJudge();
-        // })
     }
     display(mouseX,mouseY){
         this.frame++;
@@ -19,6 +16,9 @@ class StageSelect{
         this.drawRoad();
         this.drawButton();
         
+    }
+    returnStageSelect(){
+        this.nextStage = new StageRect(0,0,400,400,"選択画面",0,0);
     }
     createButton(){
         this.buttons.push(new StageRect(this.canvas,this.ctx,300,100,"ブロック崩し",true,1));
@@ -30,6 +30,7 @@ class StageSelect{
         for(const b of this.buttons){
             if(b.isHovered){
                 this.nextStage = b;
+                console.log("ステージ変更"+b.stageNum);//////////////////////////////
                 return;
             }
         }
@@ -89,8 +90,17 @@ class StageSelect{
             }
             this.ctx.fill();
             this.ctx.restore();
+
+
+            //別のステージの時はfalseにしとかないとなんかやばかった
+            
         }
 
+    }
+    allOff(){
+        for(const b of this.buttons){
+            b.isHovered = false;
+        }
     }
 
 }

@@ -24,7 +24,6 @@ class GameExplain{
     }
     click(){
         if(this.isStaged && !this.isCanClick){
-            console.log(this.isCanClick);
             this.frame = 10000;
         }
         if(this.isCanClick){

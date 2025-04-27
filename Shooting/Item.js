@@ -19,7 +19,6 @@ class Item{
     //パドルとの衝突
     checkCollision(paddleX,paddleY,paddleWidth){
         if(paddleX<=this.x+this.width && this.x<= paddleX+paddleWidth && this.y<=paddleY && paddleY<=this.y+this.height){
-            console.log(this.item);
             this.isBroken = true;
             return this.item;
         }

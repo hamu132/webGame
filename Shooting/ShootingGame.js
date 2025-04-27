@@ -6,10 +6,11 @@ import Item from './Item.js';
 
 
 class ShootingGame{
-    constructor(clickManager,canvas,ctx){
+    constructor(clickManager,canvas,ctx,clearScore){
         this.isExplainEnd = false;
         this.paddleFrame = 0;
         this.ballFrame = 0;
+        this.frame = 0;
         this.mouseX = 0;
         this.mouseY = 0;
         this.scoreRate = 1;
@@ -21,17 +22,24 @@ class ShootingGame{
         this.createBlocks();
         this.canvas = canvas;
         this.ctx = ctx;
+        this.isCleared = false;
+        this.clearScore = clearScore;
+        
         clickManager.addClickHandler(this.click.bind(this));
     }
     click(){
         if(this.isExplainEnd){
             this.ball.isClicked=true;
         }
-
     }
     // ボール
     circle(ball){
-        let { x, y } = ball.advance(this.mouseX, this.mouseY);
+
+        if(!this.isCleared){
+            ball.advance(this.mouseX, this.mouseY);
+        }
+        let x = ball.x;
+        let y = ball.y;
         this.ctx.fillStyle = "black";
         if(this.ballFrame>0){
             this.ballFrame-=1;
@@ -56,7 +64,10 @@ class ShootingGame{
         else{
             this.paddle.width = 100;
         }
-        this.paddle.setx(mouseX,this.canvas.height);
+        if(!this.isCleared){
+            this.paddle.setx(mouseX,this.canvas.height);
+        }
+        this.ctx.save();
         this.ctx.beginPath();
         this.ctx.fillStyle = "green";
         this.ctx.rect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
@@ -66,6 +77,7 @@ class ShootingGame{
         this.ctx.rect(this.paddle.x, this.paddle.y+7, this.paddle.width*this.paddleFrame/600, this.paddle.height-7); //frame=0:全く描画されない＆frame=600:width分描画
         this.ctx.fill();
         this.ctx.closePath();
+        this.ctx.restore();
     }
     //ブロックを作成
     createBlocks(){
@@ -77,7 +89,7 @@ class ShootingGame{
         const offsetX = 50;
         const offsetY = 50;
         const itemList = ["bigSize","pointUp"];
-        const pointList = [1,1,0,0];
+        const pointList = [1,1,1,1];
         const colorList = ["red","red","green","blue"];
     
         for(let row = 0; row < rows; row++){
@@ -140,13 +152,16 @@ class ShootingGame{
     drawPoint(){
         this.ctx.font = '40px Roboto medium';
         this.ctx.fillStyle = "black";
+        this.ctx.textAlign = "left"; 
+        this.ctx.textBaseline = "middle";
         const x = 450;
+        this.ctx.save();
         this.ctx.beginPath();
-        this.ctx.fillText('Point：', x, 600);
+        this.ctx.fillText('Score：', x, 600);
         this.ctx.fillText(this.score.getPoint(), x+this.ctx.measureText("Point：").width, 600);
         this.ctx.fillText('Life：', x, 550);
         this.ctx.fillText("♥".repeat(this.life), x+this.ctx.measureText("Life：").width, 550);
-        
+        this.ctx.restore();
     }
 
 
@@ -186,7 +201,6 @@ class ShootingGame{
                         this.ballFrame = 600;
                         break;
                 }
-
             }
         }
         //壁との衝突
@@ -204,24 +218,55 @@ class ShootingGame{
 
 
     }
+
+    ready(){
+        if(!this.ball.isClicked){
+            let size = 1+0.1*Math.sin(this.frame/10);
+            this.ctx.font = '30px Roboto medium';
+            this.ctx.fillStyle = "black";
+            this.ctx.textAlign = "center"; 
+            this.ctx.textBaseline = "middle";
+            this.ctx.save();
+            this.ctx.beginPath();
+            this.ctx.translate(400,400);
+            this.ctx.scale(size,size);
+            this.ctx.translate(-400,-400);
+            this.ctx.fillText("クリックでスタート",400,400);
+            this.ctx.restore();
+        }
+    }
     //毎フレーム
     gamePlay(mouseX,mouseY,isExplainEnd){
         this.isExplainEnd = isExplainEnd;
         if(isExplainEnd){
+            this.ready();
             this.mouseMove(mouseX,mouseY);//マウス座標を記録
             this.circle(this.ball);//ボール
             this.paddleDraw(this.mouseX);//打ち返し用の板
+            this.drawPoint();//得点
         }
 
         this.drawBlocks();//ブロック
         this.checkPaddleCollision();//衝突判定
-        this.drawPoint();//得点
+        this.clearCheck();
+        this.frame ++;
+        
     }
     mouseMove(mouseX,mouseY){
         this.mouseX = mouseX;
         this.mouseY = mouseY;
     }
 
+    clearCheck(){
+        if(this.clearScore = this.score.score){
+            this.isCleared = true;
+        }
+        else{
+            this.isCleared = false;
+        }
+    }
+    stop(){
 
+    }
 }
 export {ShootingGame};
