@@ -9,6 +9,9 @@ import { ClickManager } from "./ClickManager.js";
 
 class Game{
     constructor(){
+        // window.addEventListener("keydown", (key) => {
+        //     console.log(key.key);
+        // });
         this.frame = 0;
         
         this.canvas = document.getElementById("canvas");
@@ -30,6 +33,9 @@ class Game{
         this.currentStageNum2 = 0;//0:選択画面 1&2:ボール 3&4:パズル 5&6:タイピング 7:全て
         this.clearRectframe = 0;
         this.clickManager.addClickHandler(this.click.bind(this));
+
+        this.clearButtonX = 0;
+        this.clearButtonY = 0;
     }
     //マウス位置を取得
     mouseMove(){
@@ -60,23 +66,28 @@ class Game{
     click(){
         if(this.clearRectframe!=0){
             //console.log("a");/////////////////////////////////////////
-            this.stageSelect.returnStageSelect(this.currentStageNum1);
+            this.stageSelect.returnStageSelect(this.currentStageNum1,this.clearButtonX,this.clearButtonY);
         }
     }
     //クリア（ステージ共通）
-    clear(){
+    clear(offsetX,offsetY){
+        let x = 400 + offsetX;
+        let y = 400 + offsetY;
+        this.clearButtonX = x;
+        this.clearButtonY = y;
+        
         this.ctx.save();
         this.ctx.textAlign = "center"; 
         this.ctx.textBaseline = "middle";
         this.ctx.font = '30px Roboto medium';
         this.ctx.fillStyle = "blue";
-        this.ctx.fillText("クリア!",400,300);
-        if(300<this.mouseX && this.mouseX<500 && 375<this.mouseY && this.mouseY<425){
+        this.ctx.fillText("クリア!",x,y-100);
+        if(x-100<this.mouseX && this.mouseX<x+100 && y-25<this.mouseY && this.mouseY<y+25){
             this.clearRectframe ++;
             let size = 1+0.1*Math.sin(this.clearRectframe/10);
-            this.ctx.translate(400,400);
+            this.ctx.translate(x,y);
             this.ctx.scale(size,size);
-            this.ctx.translate(-400,-400);
+            this.ctx.translate(-x,-y);
         }
         else{
             this.clearRectframe = 0;
@@ -85,10 +96,10 @@ class Game{
 
 
         this.ctx.beginPath();
-        this.ctx.rect(300,375,200,50);
+        this.ctx.rect(x-100,y-25,200,50);
         this.ctx.stroke();
 
-        this.ctx.fillText("次のステージ",400,400);
+        this.ctx.fillText("次のステージ",x,y);
         this.ctx.restore();
     }
 
@@ -134,52 +145,53 @@ class Game{
                 break;
             case 1:
                 isExplainEnd = this.gameExplain.explain(isAnimation,"shoot");//説明
-                this.shootingGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd);//シューティング
-                if(this.shootingGame.score.score>=1){
-                    this.clear();
+                this.shootingGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd,10);//シューティング
+                if(this.shootingGame.isCleared){
+                    this.clear(0,0);
                 }
                 break;
             case 2:
                 isExplainEnd = this.gameExplain.explain(isAnimation,"shootEndless");//説明
-                this.shootingGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd);//シューティング
-                if(this.shootingGame.score.score>=100000){
-                    this.clear();
-                }
+                this.shootingGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd,10000);//シューティング
                 break;
 
             case 3:
                 isExplainEnd = this.gameExplain.explain(isAnimation,"puzzle");//説明
-                this.puzzleGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd,320,250);//パズル
-                if(this.puzzleGame.score>=1){
-                    this.clear();
+                this.puzzleGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd,320,250,10);//パズル
+                if(this.puzzleGame.isCleared){
+                    this.clear(-250,0);
                 }
                 break;
             case 4:
                 isExplainEnd = this.gameExplain.explain(isAnimation,"puzzleEndless");//説明
-                this.puzzleGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd,320,250);//パズル
+                this.puzzleGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd,320,250,10000);//パズル
                 break;
             case 5:
                 isExplainEnd = this.gameExplain.explain(isAnimation,"typing");//説明
-                this.typing.gamePlay(false);//タイピング
-                if(this.typing.score>=1){
-                    this.clear();
+                this.typing.gamePlay(false,isExplainEnd,10);//タイピング
+                if(this.typing.isCleared){
+                    this.clear(-250,0);
                 }
                 break;
             case 6:
                 isExplainEnd = this.gameExplain.explain(isAnimation,"typing");//説明
-                this.typing.gamePlay(false);//タイピング
+                this.typing.gamePlay(falseisExplainEnd,10000000);//タイピング
                 break;
             case 7:
-                this.shootingGame.gamePlay(this.mouseX,this.mouseY);//シューティング
-                this.puzzleGame.gamePlay(this.mouseX,this.mouseY,80,250);//パズル
-                this.typing.gamePlay(true);//タイピング
-                this.finalStage.drawScore(this.shootingGame.score.score,this.shootingGame.life,this.puzzleGame.score,this.puzzleGame.life,this.typing.score,this.typing.life);
+                isExplainEnd = this.gameExplain.explain(isAnimation,"final");//説明
+                if(isExplainEnd){
+                    this.shootingGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd,1000000);//シューティング
+                    this.puzzleGame.gamePlay(this.mouseX,this.mouseY,isExplainEnd,320,250,1000000);//パズル
+                    this.typing.gamePlay(true,10000);//タイピング
+                    this.finalStage.drawScore(this.shootingGame.score.score,this.shootingGame.life,this.puzzleGame.score,this.puzzleGame.life,this.typing.score,this.typing.life);
+    
+                }
                 break;
         }
 
         //白
         this.animationManager.selectToStage2(this.frame);
-        console.log(stageNum,this.currentStageNum1,this.currentStageNum2);///////////////////////////////////////////////////////
+        //console.log(stageNum,this.currentStageNum1,this.currentStageNum2);///////////////////////////////////////////////////////
         
         this.ctx.restore();
         requestAnimationFrame(this.update.bind(this));//毎フレーム更新？

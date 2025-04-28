@@ -88,11 +88,45 @@ class GameExplain{
             "そんなことを言われても、ボクは泣きませんよ！",
             "だってボクは、キミよりも強いのデスから♪",
             "ククク...(手で目を隠しながら)",
-            "あぁもう、早く始めればいいじゃないデスか！",
+            "...もう、早く始めればいいじゃないデスか！",
             "ぐすん。"
         ]
 
-        this.typingSerifus = ["ここはタイピングです。","以上です。"];
+        this.typingSerifus = ["ここはタイピングです。","以上です。(雑)"];
+
+        this.typingEndlessSerifus = ["ここはタイピングです。","以上です。(雑)",
+            "...おっと。",
+            "あなたがつけているその指輪、もしかして",
+            "「裏コマンドミツケールリング」...のようですね。",
+            "本来はこれで終わりの予定でしたが、気が変わりました。",
+            "裏コマンドを教えて差し上げましょう。",
+            "[全てのステージをプレイ可能状態にする]：コントロールキー",
+            "[説明を全てスキップする]：コントロールキー",
+            "[ステージを出る]：コントロールキー",
+            "というものですが、",
+            "開発がめんどくさくなったのでまだ実装してません（雑）",
+            "文章考えるのもめんどくさくなってきたので、ごゆっくり～（雑）",
+        ];
+
+
+        this.finalSerifus = [
+            "...味方A！味方B！聞こえたら返事して！",
+            "く...応答がない、どうやら全部ダメらしいわね。",
+            "オトシゴ君、ここまで生き残れたのは、貴方と私だけよ。",
+            "でも私は、さっきの敵の毒が回ってきてしまったようだわ。",
+            "(そんなシーンあったか？、とツッコむところ)",
+            "きっとこれがラストステージだけど...私は先には行けないわ。",
+            "残念だけど、もう足が動かないの。",
+            "でも、最後にこれだけ言わせてちょうだい。",
+            "ずっと前から想っていたのに、恥ずかしくて言えなかったこと。",
+            "オトシゴ君。",
+            "実は私、貴方のことが...",
+            "ス...//",
+            "ス...//",
+            "ｽｷﾔｷ!",
+            "(最終決戦BGMが流れる)"
+        ]
+
         this.testSerifus = ["これはテスト台詞。"];
     }
     click(){
@@ -176,11 +210,11 @@ class GameExplain{
 
             case "shootEndless":
                 serifus = this.ShootEndlessSerifus;
-                serifus = this.testSerifus;
+                //serifus = this.testSerifus;
                 break;
             case "puzzle":
                 serifus = this.puzzleSerifus;
-                serifus = this.testSerifus;
+                //serifus = this.testSerifus;
                 break;
             case "puzzleEndless":
                 serifus = this.puzzleEndlessSerifus;
@@ -188,6 +222,10 @@ class GameExplain{
             case "typing":
                 serifus = this.typingSerifus;
                 break;
+            case "typingEndless":
+                serifus = this.typingEndlessSerifus;
+            case "final":
+                serifus = this.finalSerifus;
         }
 
         this.isStaged = true;

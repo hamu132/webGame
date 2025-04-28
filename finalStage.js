@@ -19,6 +19,7 @@ class FinalStage{
         const valueX = x/5;
 
         this.ctx.save();
+        this.ctx.beginPath();
         this.ctx.textAlign = "left";
         this.ctx.textBaseline = "middle";
         this.ctx.font = "48px sans-serif";
@@ -27,20 +28,29 @@ class FinalStage{
         this.ctx.rotate(this.angle);//angleを定義しておく
         this.ctx.fillStyle = "red";
         this.ctx.fillText("【Shooting】",titleX,0);
+        this.ctx.strokeText("【Shooting】",titleX,0);
         this.ctx.fillText(shootScore,valueX,kannkaku);
+        this.ctx.strokeText(shootScore,valueX,kannkaku);
         this.ctx.fillText("♥".repeat(shootLife),valueX,kannkaku*2);
+        this.ctx.strokeText("♥".repeat(shootLife),valueX,kannkaku*2);
 
         this.ctx.rotate(Math.PI/1.5);
         this.ctx.fillStyle = "blue";
         this.ctx.fillText("【Puzzle】",titleX,0);
+        this.ctx.strokeText("【Puzzle】",titleX,0);
         this.ctx.fillText(puzzleScore,valueX,kannkaku);
+        this.ctx.strokeText(puzzleScore,valueX,kannkaku);
         this.ctx.fillText("♥".repeat(puzzleLife),valueX,kannkaku*2);
+        this.ctx.strokeText("♥".repeat(puzzleLife),valueX,kannkaku*2);
 
         this.ctx.rotate(Math.PI/1.5);
         this.ctx.fillStyle = "green";
         this.ctx.fillText("【Typing】",titleX,0);
+        this.ctx.strokeText("【Typing】",titleX,0);
         this.ctx.fillText(typingScore,valueX,kannkaku);
+        this.ctx.strokeText(typingScore,valueX,kannkaku);
         this.ctx.fillText("♥".repeat(typingLife),valueX,kannkaku*2);
+        this.ctx.strokeText("♥".repeat(typingLife),valueX,kannkaku*2);
         this.ctx.fill();
         this.ctx.restore();
         this.angle+=0.003;
