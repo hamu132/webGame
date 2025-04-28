@@ -174,8 +174,8 @@ class Game{
                 }
                 break;
             case 6:
-                isExplainEnd = this.gameExplain.explain(isAnimation,"typing");//説明
-                this.typing.gamePlay(falseisExplainEnd,10000000);//タイピング
+                isExplainEnd = this.gameExplain.explain(isAnimation,"typingEndless");//説明
+                this.typing.gamePlay(false,isExplainEnd,10000000);//タイピング
                 break;
             case 7:
                 isExplainEnd = this.gameExplain.explain(isAnimation,"final");//説明

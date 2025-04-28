@@ -9,6 +9,7 @@ class GameExplain{
         this.isStaged = false;
         this.isCanClick = false;
         this.isExplainEnd = false;
+        this.serifus = [];
         this.ShootSerifus = ["ふぉっふぉっふぉ。","わしはブロック崩しゲームの精霊、",
             "「ブロッククズシセイレイ」じゃ。",
             "これからお前さんにルールを伝授してゆくじゃ",
@@ -56,12 +57,11 @@ class GameExplain{
             "ククク...(眼鏡をクイッとしながら)",
             "まず最初にキミは、好きな「選択マス」を二つ選んでクリックして頂くのデスねぇ。",
             "そうしたら、2つの「選択マス」を対角に持つ長方形が存在するのが分かりマスよねぇ。",
-            "その長方形の内部にある「プラスマス」と「マイナスマス」が数だけ",
+            "その長方形の内部にある「プラスマス」と「マイナスマス」の数だけ",
             "スコアが得られる仕組みなのですねぇ。",
             "ククク...(眼鏡をクイッとしながら)",
             "こんなにカンタンなルールデスが...もしかして、ルールが全然理解できませんデスか？",
-            "その場合は全部、キミの責任デスねぇ。",
-            "頑張って体で覚えるしかないデスよ！",
+            "その場合は全部、体で覚えるしかないデスねぇ！",
             "わざわざもう一度説明するなんてイヤなのデスから♪",
             //"開発者のルール設定が微妙ということだけは断じて絶対に有り得ないのデスから♪",
             "サテ...今回はとりあえず、10ポイント取れたらクリアということにしてあげマスよ。",
@@ -104,7 +104,7 @@ class GameExplain{
             "[説明を全てスキップする]：コントロールキー",
             "[ステージを出る]：コントロールキー",
             "というものですが、",
-            "開発がめんどくさくなったのでまだ実装してません（雑）",
+            "[ステージを出る]に関しては開発がめんどくさかったのでまだ実装してません（雑）",
             "文章考えるのもめんどくさくなってきたので、ごゆっくり～（雑）",
         ];
 
@@ -128,6 +128,14 @@ class GameExplain{
         ]
 
         this.testSerifus = ["これはテスト台詞。"];
+        window.addEventListener("keydown", (e) => {
+            if(e.key == "Control"){
+                if(this.serifuNum<this.serifus.length){
+                    this.serifuNum = this.serifus.length-1;
+                }
+                
+            }
+        });
     }
     click(){
         if(this.isStaged && !this.isCanClick){
@@ -205,7 +213,7 @@ class GameExplain{
         switch(name){
             case "shoot":
                 serifus = this.ShootSerifus;
-                serifus = this.testSerifus;
+                //serifus = this.testSerifus;
                 break;
 
             case "shootEndless":
@@ -224,10 +232,12 @@ class GameExplain{
                 break;
             case "typingEndless":
                 serifus = this.typingEndlessSerifus;
+                break;
             case "final":
                 serifus = this.finalSerifus;
+                break;
         }
-
+        this.serifus = serifus;
         this.isStaged = true;
         if(isAnimation){
             this.frame = 0;

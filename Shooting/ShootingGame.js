@@ -240,11 +240,12 @@ class ShootingGame{
     ready(){
         if(!this.ball.isClicked){
             let size = 1+0.1*Math.sin(this.frame/10);
+
+            this.ctx.save();
             this.ctx.font = '30px Roboto medium';
             this.ctx.fillStyle = "black";
             this.ctx.textAlign = "center"; 
             this.ctx.textBaseline = "middle";
-            this.ctx.save();
             this.ctx.beginPath();
             this.ctx.translate(400,400);
             this.ctx.scale(size,size);

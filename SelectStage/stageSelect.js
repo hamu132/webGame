@@ -11,6 +11,13 @@ class StageSelect{
         this.createRoad();
         this.nextStage = new StageRect(0,0,0,0,0,0,0);
         clickManager.addClickHandler(this.clickJudge.bind(this));
+        window.addEventListener("keydown", (e) => {
+            if(e.key == "Control"){
+                for(let b of this.buttons){
+                    b.isReady = true;
+                }
+            }
+        });
     }
     display(mouseX,mouseY){
         this.frame++;
@@ -87,22 +94,6 @@ class StageSelect{
         
     }
     drawRoad(){
-        // let prevX;
-        // let prevY;
-        // for(const b of this.buttons){
-        //     if(prevX!=undefined){
-        //         this.ctx.fillStyle = "green";
-        //         this.ctx.beginPath();
-        //         this.ctx.moveTo(b.x, b.y);
-        //         this.ctx.lineTo(b.x+10, b.y);
-        //         this.ctx.lineTo(prevX+10, prevY);
-        //         this.ctx.lineTo(prevX, prevY);
-        //         this.ctx.closePath();
-        //         this.ctx.fill();
-        //     }
-        //     prevX = b.x;
-        //     prevY = b.y;
-        // }
         for(let r of this.roads){
             this.ctx.fillStyle = "green";
             this.ctx.beginPath();

@@ -32,7 +32,7 @@ class Block{
         if(this.isBroken){
             this.frame++;
         }
-        if(this.frame>1000){
+        if(this.frame>3000){
             this.isBroken = false;
             this.frame = 0;
             this.item.x = this.x;
