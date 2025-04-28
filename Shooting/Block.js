@@ -9,6 +9,7 @@ class Block{
         this.color = color;
         this.item = item;
         this.isBroken = false;
+        this.frame = 0;
     }
 
     //ブロックとボールの接触を検知
@@ -25,6 +26,22 @@ class Block{
             }
         }
         return;
+    }
+
+    update(){
+        if(this.isBroken){
+            this.frame++;
+        }
+        if(this.frame>1000){
+            this.isBroken = false;
+            this.frame = 0;
+            this.item.x = this.x;
+            this.item.y = this.y;
+            this.item.isBroken = false;
+        }
+    }
+    revive(){
+
     }
 }
 

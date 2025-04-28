@@ -22,20 +22,40 @@ class Typing{
         this.createText();
         this.boundKeyDown = this.keyDown.bind(this);
         window.addEventListener("keydown", this.boundKeyDown);
+        this.clearScore = 10;
+        this.isCleared = false;
     }
     //リセット用
     destroy() {
         window.removeEventListener("keydown", this.boundKeyDown);
     }
     //毎フレーム呼び出される
-    gamePlay(mode){
-        this.frame ++;
-        if(this.word.timeProcess(this.frame) <= 0){
-            this.life -= 1;
-            this.createText();
+    gamePlay(mode,isExplainEnd,clearScore){
+        this.clearScore = clearScore;
+        if(isExplainEnd && !this.isCleared){
+            this.frame++;
+            if(this.word.timeProcess(this.frame) <= 0){
+                this.life -= 1;
+                this.createText();
+            }
         }
-        //1~600
-        this.drawText(mode);
+
+        this.drawText(mode,isExplainEnd);
+        
+        if(!mode){
+            this.drawScore();
+        }
+        
+        this.clearCheck();
+    }
+    drawScore(){
+        this.ctx.save();
+        this.ctx.beginPath();
+        this.ctx.font = "30px sans-serif";
+        this.ctx.fillText("Score:"+this.score,600,460);
+        this.ctx.fillText("Life:"+this.life,600,500);
+        this.ctx.restore();
+
     }
     //問題のテキストを選ぶ+ローマ字を取得(最初＆問題クリア時)
     createText(){
@@ -60,15 +80,18 @@ class Typing{
     }
 
     //描画
-    drawText(mode){
-        this.word.scale*=1.002;
+    drawText(mode,isExplainEnd){
+        if(isExplainEnd && !this.isCleared){
+            this.word.scale*=1.002;
+        }
+        
         this.ctx.save();
         //ちょっとずつ大きくなってくやつ
         this.ctx.beginPath();
         
         this.ctx.translate(this.canvas.width/2, this.canvas.height/2);
         if(mode){
-            this.ctx.rotate(this.word.angle);
+            this.ctx.translate(0, 200);
         }
         this.ctx.scale(this.word.scale,this.word.scale);
         this.ctx.translate(-this.canvas.width/2, -this.canvas.height/2);
@@ -110,7 +133,14 @@ class Typing{
             x += charWidth;
         }
         this.ctx.restore();
-        //this.ctx.fillText(this.word.limitTime,700,700);
+    }
+    clearCheck(){
+        if(this.clearScore == this.score){
+            this.isCleared = true;
+        }
+        else{
+            this.isCleared = false;
+        }
     }
 }
 

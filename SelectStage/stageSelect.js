@@ -20,7 +20,7 @@ class StageSelect{
         this.drawButton();
         
     }
-    returnStageSelect(stageNum){
+    returnStageSelect(stageNum,x,y){
         //1→2&3が解禁
         //2→なし
         //3→4&5が解禁
@@ -42,7 +42,7 @@ class StageSelect{
             default:
                 kaikinNum = [];
         }
-        this.nextStage = new StageRect(0,0,400,400,"選択画面",0,0);
+        this.nextStage = new StageRect(0,0,x,y,"選択画面",0,0);
         this.number++;
         this.setReady(kaikinNum);
     }

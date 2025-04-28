@@ -12,10 +12,16 @@ class Item{
             this.width = 17;
             this.height = 8;
         }
+        if(itemName == "penetrate"){
+            this.width = 10;
+            this.height = 10;
+        }
     }
     advance(){
+        
         this.y+=2;
     }
+
     //パドルとの衝突
     checkCollision(paddleX,paddleY,paddleWidth){
         if(paddleX<=this.x+this.width && this.x<= paddleX+paddleWidth && this.y<=paddleY && paddleY<=this.y+this.height){

@@ -6,7 +6,7 @@ import Item from './Item.js';
 
 
 class ShootingGame{
-    constructor(clickManager,canvas,ctx,clearScore){
+    constructor(clickManager,canvas,ctx){
         this.isExplainEnd = false;
         this.paddleFrame = 0;
         this.ballFrame = 0;
@@ -23,7 +23,7 @@ class ShootingGame{
         this.canvas = canvas;
         this.ctx = ctx;
         this.isCleared = false;
-        this.clearScore = clearScore;
+        this.clearScore;
         
         clickManager.addClickHandler(this.click.bind(this));
     }
@@ -48,6 +48,9 @@ class ShootingGame{
         }
         else{
             this.scoreRate = 1;
+        }
+        if(this.ball.isPenetrate){
+            this.ctx.fillStyle = "blue";
         }
         var radius = ball.radius;
         this.ctx.beginPath();
@@ -88,8 +91,8 @@ class ShootingGame{
         const padding = 10;
         const offsetX = 50;
         const offsetY = 50;
-        const itemList = ["bigSize","pointUp"];
-        const pointList = [1,1,1,1];
+        const itemList = ["bigSize","pointUp","penetrate"];
+        const pointList = [1,1,0,0];
         const colorList = ["red","red","green","blue"];
     
         for(let row = 0; row < rows; row++){
@@ -141,6 +144,13 @@ class ShootingGame{
                     this.ctx.textAlign = "center";
                     this.ctx.fillText("P↑",block.item.x,block.item.y);
                 }
+                else if(block.item.item == "penetrate"){
+                    this.ctx.font = 'bold 12px Arial Black';
+                    this.ctx.fillStyle = "red";
+                    this.ctx.textBaseline = "middle";
+                    this.ctx.textAlign = "center";
+                    this.ctx.fillText("⚔",block.item.x,block.item.y);
+                }
                 
                 this.ctx.fill();
                 this.ctx.stroke();
@@ -176,21 +186,27 @@ class ShootingGame{
     
         // ブロックもしくはアイテムとの衝突
         for(const block of this.blocks){
+            //ブロックとの衝突
             if(!block.isBroken){
                 const blockRate = block.checkCollision(this.ball.x, this.ball.y, this.ball.radius);
                 if(blockRate === 1){
-                    this.ball.yspeed = -this.ball.yspeed;
+                    if(!this.ball.isPenetrate){
+                        this.ball.yspeed = -this.ball.yspeed;
+                    }
                     block.isBroken = true;
                     this.score.pointUp(block,this.scoreRate);
                     break;
                 }
                 if(blockRate === 2){
-                    this.ball.xspeed = -this.ball.xspeed;
+                    if(!this.ball.isPenetrate){
+                        this.ball.xspeed = -this.ball.xspeed;
+                    }
                     block.isBroken = true;
                     this.score.pointUp(block,this.scoreRate);
                     break;
                 }
             }
+            //アイテミングとの衝突イング
             else if(!block.item.isBroken){
                 const itemName = block.item.checkCollision(this.paddle.x,this.paddle.y,this.paddle.width);
                 switch (itemName){
@@ -200,6 +216,8 @@ class ShootingGame{
                     case "pointUp":
                         this.ballFrame = 600;
                         break;
+                    case "penetrate":
+                        this.ball.penetrateFrame = 600;
                 }
             }
         }
@@ -236,19 +254,27 @@ class ShootingGame{
         }
     }
     //毎フレーム
-    gamePlay(mouseX,mouseY,isExplainEnd){
+    gamePlay(mouseX,mouseY,isExplainEnd,clearScore){
+        this.clearScore = clearScore;
         this.isExplainEnd = isExplainEnd;
         if(isExplainEnd){
             this.ready();
             this.mouseMove(mouseX,mouseY);//マウス座標を記録
             this.circle(this.ball);//ボール
             this.paddleDraw(this.mouseX);//打ち返し用の板
-            this.drawPoint();//得点
+            if(this.clearScore!=1000000){
+                this.drawPoint();//得点
+            }
+            
         }
 
         this.drawBlocks();//ブロック
         this.checkPaddleCollision();//衝突判定
         this.clearCheck();
+
+        for(let b of this.blocks){
+            b.update();
+        }
         this.frame ++;
         
     }
@@ -258,7 +284,7 @@ class ShootingGame{
     }
 
     clearCheck(){
-        if(this.clearScore = this.score.score){
+        if(this.clearScore <= this.score.score){
             this.isCleared = true;
         }
         else{

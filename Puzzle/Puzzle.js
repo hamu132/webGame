@@ -23,32 +23,37 @@ class PuzzleGame{
         this.minusItem = "green";
         this.rectItem = "blue";
         this.score = 0;
-
-
+        this.clearScore = 1;
+        this.isCleared = false;
     }
     //毎フレーム
-    gamePlay(mouseX,mouseY,isExplainEnd,offsetX,offsetY){
+    gamePlay(mouseX,mouseY,isExplainEnd,offsetX,offsetY,clearScore){
+        this.clearScore = clearScore;
         this.offsetX = offsetX;
         this.offsetY = offsetY
-        if(isExplainEnd){
+        if(isExplainEnd && !this.isCleared){
             this.frame++;
         }
-        else{
+        if(!isExplainEnd){
             this.frame = 50;
         }
         
-        if(this.frame%60==0){
+        if(this.frame%60==0 && !this.isCleared){
             this.limitTime-=1;
         }
-        if(this.frame%1200==0){
+        if(this.frame%1200==0 && !this.isCleared){
             this.frame = 0;
             this.life-=1;
         }
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.drawBlocks(mouseX,mouseY);
-        this.drawPoint();
+        if(clearScore != 1000000){
+            this.drawPoint();
+        }
+        
         this.drawLimitTime();
+        this.clearCheck();
     }
     //クリック
     handleClick(mouseX, mouseY) {
@@ -108,7 +113,8 @@ class PuzzleGame{
     drawLimitTime(){
         this.ctx.save();
         this.ctx.beginPath();
-        this.ctx.fillStyle = "red";
+        
+        this.ctx.globalAlpha = 1;
         //長さを取得
         const length = 215;
         const l = length/300;
@@ -117,8 +123,9 @@ class PuzzleGame{
         this.ctx.rect(this.offsetX-30,this.liner(l,300,220),        5,this.liner(-l,300,length));
         this.ctx.rect(this.offsetX-50+this.liner(l,600,20),220+length, this.liner(-l,600,length),5);
         this.ctx.rect(this.offsetX-30+length,225,                   5,this.liner(-l,900,length));
+        this.ctx.fillStyle = "red";
         this.ctx.fill();
-
+        //this.ctx.beginPath();//←この行を加えるとなぜか上の四角形が赤く塗りつぶされる
         this.ctx.restore();
     }
     //得点対象に星を描画
@@ -250,6 +257,8 @@ class PuzzleGame{
         this.ctx.rect(this.offsetX+80,this.offsetY+260,20,-20);
         this.ctx.stroke();
         this.ctx.fill();
+        
+        
 
         this.ctx.beginPath();
         this.ctx.font = '30px sans-serif';
@@ -257,10 +266,19 @@ class PuzzleGame{
         this.ctx.fillText('Score:　　'+this.score, this.offsetX+220, this.offsetY);
         this.ctx.fillText('Life:　　'+this.life, this.offsetX+220, this.offsetY+50);
 
-
+        
         this.ctx.restore();
+        
+        
     }
-
+    clearCheck(){
+        if(this.clearScore <= this.score){
+            this.isCleared = true;
+        }
+        else{
+            this.isCleared = false;
+        }
+    }
 }
 
 export {PuzzleGame};

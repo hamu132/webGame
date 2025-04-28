@@ -7,6 +7,8 @@ class Ball{
         this.radius = 10;
         this.isClicked = false
         this.initY = paddle.y-this.radius;
+        this.isPenetrate = false;
+        this.penetrateFrame = 0;
     }
     getBottom(){
         return this.y + this.radius;
@@ -19,6 +21,13 @@ class Ball{
         else{
             this.x = mouseX;
             this.y = this.initY;
+        }
+        if(this.penetrateFrame>0){
+            this.isPenetrate = true;
+            this.penetrateFrame-=1;
+        }
+        else{
+            this.isPenetrate = false;
         }
     }
 }
