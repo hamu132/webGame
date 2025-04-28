@@ -3,6 +3,7 @@ class FinalStage{
         this.canvas = canvas;
         this.ctx = ctx;
         this.angle = 0;
+        this.totalScore;
     }
     drawScore(ss,sl,ps,pl,ts,tl){
         if(sl==0 || pl==0 || tl==0){
@@ -20,6 +21,7 @@ class FinalStage{
             this.ctx.font = "30px sans-serif";
             this.ctx.fillText("遊んでいただき本当にありがとうございました。",400,500);
             this.ctx.fillText("これにてこのゲームは終了です。お帰り下さい。(雑)",400,550);
+            this.ctx.fillText("total score:"+this.totalScore,400,600);
             this.ctx.restore();
         }
         else{
@@ -29,7 +31,7 @@ class FinalStage{
             let puzzleLife = pl;
             let typingScore = ts;
             let typingLife = tl;
-            let totalScore = shootScore + puzzleScore + typingScore;
+            this.totalScore = shootScore + puzzleScore + typingScore;
             let x = this.canvas.width/2;
             let y = this.canvas.height/2;
             const kannkaku = 50;
@@ -77,7 +79,7 @@ class FinalStage{
             this.ctx.beginPath();
             this.ctx.fillStyle = "red"
             this.ctx.font = "bold 48px serif";
-            this.ctx.fillText("Total Score:"+totalScore,450,770);
+            this.ctx.fillText("Total Score:"+this.totalScore,450,770);
             this.ctx.restore();
         }
 
